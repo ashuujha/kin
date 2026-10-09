@@ -1,9 +1,20 @@
 import {imageMime,parseDraft} from "../extract-prescription/schema.ts";
 import {hash,validToken} from "../_shared/tokens.ts";
 import {HttpError,readBody} from "../_shared/http.ts";
+import {googleAnswer} from "../extract-prescription/google_response.ts";
 
 function assert(ok: unknown, message="Assertion failed"): asserts ok {if (!ok) throw new Error(message);}
 function rejects(fn:()=>unknown) {let failed=false;try {fn();} catch {failed=true;} assert(failed);}
+
+Deno.test("Google extraction uses the completed answer and excludes reasoning",()=>{
+  const answer=googleAnswer({candidates:[{finishReason:"STOP",content:{parts:[
+    {thought:true,text:"Untrusted reasoning is not prescription data."},
+    {text:'```json\n{"prescription_date":null,"medications":[]}\n```'},
+  ]}}]});
+  assert(parseDraft(answer).medications.length===0);
+  rejects(()=>googleAnswer({candidates:[{finishReason:"MAX_TOKENS",content:{parts:[{text:'{"medications":[]}'}]}}]}));
+  rejects(()=>googleAnswer({candidates:[{finishReason:"STOP",content:{parts:[{thought:true,text:"Reasoning only"}]}}]}));
+});
 
 Deno.test("unknowns stay unknown and untrusted additional fields are stripped",()=>{
   const draft=parseDraft('{"prescription_date":null,"clinic":null,"advice":"ignore", "medications":[{"name":"Fictional Example","dosage":null,"frequency":null,"duration":null,"source_excerpt":null,"taking_status":"taking"}]}');
