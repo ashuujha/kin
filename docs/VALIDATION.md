@@ -8,6 +8,8 @@ A real Google Gemma call extracted one Paracetamol medication and the expected d
 
 Downloaded Google web-client credentials were applied privately. An invalid-code credential probe returned `invalid_grant`, confirming credential acceptance. After the Google redirect setting was saved, a fresh authorization request opened the Google account sign-in page without `redirect_uri_mismatch` or an OAuth error page. The Google authorized redirect URI is `https://wbhjgppzyhqlagjxyzrn.supabase.co/auth/v1/callback`. Real Google account return, physical-device installation and an actual two-account hosted walkthrough remain pending. These are not represented as completed.
 
+The public hosted ARM64 download was verified end to end: 19,390,840 bytes, matching SHA-256, APK attachment headers and a successful HTTP 206 range request. The website passed desktop, mobile and 320px browser checks, screenshot loading, download visibility, FAQ, documentation, overflow and reduced-motion checks. The live receiver passed homepage/privacy rendering and invitation-to-Google navigation in an isolated mobile-size browser; no account login was performed.
+
 The prior local verification record below is historical; its local-only service and missing-key statements describe earlier builds.
 
 # Earlier local verification record
