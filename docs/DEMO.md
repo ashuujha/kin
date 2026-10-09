@@ -6,6 +6,10 @@ not an external OAuth login. The WhatsApp architecture screenshot is not input
 medical evidence. Live provider credentials and public project URL are not yet
 available in this development session.
 
+Compiled APK and passing checks are recorded in [VALIDATION.md](VALIDATION.md).
+The real local API integration test can be run after `supabase start` with
+`npm run test:integration`; its Google eligibility rows are clearly synthetic.
+
 ## Three-minute walkthrough
 1. Owner signs in using Google on the Android app.
 2. Upload the visibly fictional typed prescription PNG from `fixtures`.

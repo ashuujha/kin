@@ -17,6 +17,8 @@ Kin does not diagnose, recommend treatment, predict risks or check interactions.
 ## Build status
 
 The app, browser client, database access controls and model adapter are implemented.
+Flutter, browser/backend and database checks pass, the local HTTP flow passes in
+CI, and an installable Android debug APK compiles. See [verification evidence](docs/VALIDATION.md).
 Live Google OAuth, a live Gemma image call, public HTTPS hosting and a physical
 Android walkthrough need account configuration. Local tests do not count as live
 AI evidence. Consult CI and [docs/DEMO.md](docs/DEMO.md) before presenting a feature
@@ -39,7 +41,9 @@ supabase/
   functions/             Authenticated Gemma extraction; anonymous contact projection
   tests/database/        Cross-user, forwarded-link, expiry and revocation checks
 fixtures/                Visibly fictional test prescription and expected fields
+scripts/                 Real local API integration test (refuses remote projects)
 docs/                    Scope, architecture, API, privacy, threat model, pitch and rules
+graphify-out/            Interactive architecture graph, data and audit report
 .github/workflows/       CI and installable debug APK build
 ```
 
@@ -103,6 +107,7 @@ npm test
 npm run check:backend
 npm run build
 npx supabase test db
+npm run test:integration
 ```
 
 In `apps/mobile`: `flutter analyze`, `flutter test` and

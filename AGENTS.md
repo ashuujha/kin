@@ -15,6 +15,7 @@ Use fictional medical records for development and demos. Never commit credential
 - Mobile: `flutter pub get`, `flutter analyze`, `flutter test` in `apps/mobile`.
 - One Dart file: `dart format lib/path.dart`; one test: `flutter test test/path_test.dart`.
 - Database: `npx supabase start`, `npx supabase test db` (Docker required).
+- HTTP flow: `npm run test:integration` against local Supabase only; Google identity fixtures are synthetic.
 - Backend tests: `npm run test:backend`; database tests must run before changing access policies.
 
 ## Boundaries
