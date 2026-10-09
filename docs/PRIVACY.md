@@ -27,3 +27,11 @@ No HIPAA, DPDP, medical-device approval or E2EE claim is made. Applicable duties
 depend on jurisdiction, relationships, intended use and phased legal commencement.
 Copies recipients have saved cannot be revoked. Operator logs/backups and account
 erasure need a separate retention and deletion design before a public patient launch.
+
+## Laboratory reports and emergency opt-in
+
+Imported lab PDFs/images are private originals. Import requests AI extraction; the selected report or its text is sent to the configured provider. Use fictional reports in this hackathon. Draft results are saved automatically and require owner comparison before sharing. Source flags are copied, not independently interpreted.
+
+Drive/DICOM links remain private records in Kin; accessing their files follows the source provider’s permissions. Kin does not store laboratory portal passwords or OTPs.
+
+The separate emergency medical QR is disabled by default. If the owner opts in, anyone holding the QR can view its selected medical snapshot without login. This includes people who forward or photograph it. Original files, Drive URLs and private extraction excerpts are excluded. Revoke or replace the QR to stop future reads; already copied information cannot be recalled.

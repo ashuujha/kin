@@ -185,6 +185,120 @@ class KinRepository {
     await secureStorage.delete(key: 'kin.contact.$owner');
   }
 
+  Future<List<RecordMap>> linkedReports() async => List<RecordMap>.from(
+    await client
+        .from('linked_reports')
+        .select()
+        .order('created_at', ascending: false),
+  );
+  Future<void> addLinked(String title, String url, String kind) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null ||
+        uri.scheme != 'https' ||
+        uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty ||
+        uri.hasFragment ||
+        url.length > 2048) {
+      throw const FormatException('Use an HTTPS file or portal link.');
+    }
+    await client.from('linked_reports').insert({
+      'title': title,
+      'url': url,
+      'kind': kind,
+    });
+  }
+
+  Future<void> deleteLinked(String id) async =>
+      client.from('linked_reports').delete().eq('id', id);
+  Future<List<RecordMap>> labs() async => List<RecordMap>.from(
+    await client
+        .from('lab_reports')
+        .select()
+        .order('created_at', ascending: false),
+  );
+  Future<RecordMap> uploadLab(String title, Uint8List bytes) async {
+    final mime =
+        bytes.length <= 5242880 &&
+            bytes.length > 5 &&
+            utf8.decode(bytes.sublist(0, 5), allowMalformed: true) == '%PDF-'
+        ? 'application/pdf'
+        : imageMime(bytes);
+    if (mime == null) {
+      throw const FormatException('Use a PDF, JPEG or PNG up to 5 MB.');
+    }
+    final id = const Uuid().v4();
+    final path =
+        '$owner/$id${mime == 'application/pdf'
+            ? '.pdf'
+            : mime == 'image/png'
+            ? '.png'
+            : '.jpg'}';
+    await client.storage
+        .from('lab-reports')
+        .uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime));
+    try {
+      return await client
+          .from('lab_reports')
+          .insert({
+            'id': id,
+            'title': title,
+            'object_path': path,
+            'mime_type': mime,
+          })
+          .select()
+          .single();
+    } catch (_) {
+      await client.storage.from('lab-reports').remove([path]);
+      rethrow;
+    }
+  }
+
+  Future<RecordMap> extractLab(String id) async {
+    final r = await client.functions.invoke(
+      'extract-lab',
+      body: {'report_id': id},
+    );
+    return Map<String, dynamic>.from(r.data);
+  }
+
+  Future<void> reviewLab(String id) async =>
+      client.rpc('review_lab', params: {'p_id': id});
+  Future<String> labOriginalUrl(RecordMap doc) => client.storage
+      .from('lab-reports')
+      .createSignedUrl(doc['object_path'], 60);
+  Future<void> deleteLab(RecordMap doc) async {
+    await client.storage.from('lab-reports').remove([
+      doc['object_path'] as String,
+    ]);
+    await client.rpc('delete_lab', params: {'p_id': doc['id']});
+  }
+
+  Future<RecordMap?> emergency() async =>
+      client.from('emergency_profiles').select().maybeSingle();
+  Future<String?> emergencyLink() async {
+    final token = await secureStorage.read(key: 'kin.emergency.$owner');
+    if (token == null) return null;
+    final data = await emergency();
+    return data?['token_hash'] == tokenHash(token)
+        ? '${AppConfig.recipientUrl}/m#$token'
+        : null;
+  }
+
+  Future<String> publishEmergency(List<String> labIds) async {
+    final token = newToken();
+    await client.rpc(
+      'publish_emergency',
+      params: {'p_token_hash': tokenHash(token), 'p_lab_ids': labIds},
+    );
+    await secureStorage.write(key: 'kin.emergency.$owner', value: token);
+    return '${AppConfig.recipientUrl}/m#$token';
+  }
+
+  Future<void> revokeEmergency() async {
+    await client.rpc('revoke_emergency');
+    await secureStorage.delete(key: 'kin.emergency.$owner');
+  }
+
   Future<void> deleteDocument(RecordMap doc) async {
     await client.storage.from('prescriptions').remove([
       doc['object_path'] as String,

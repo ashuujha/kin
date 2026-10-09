@@ -118,7 +118,7 @@ class _AuthScreenState extends State<AuthScreen> {
             SizedBox(height: 20),
             Text(
               'Use fictional records for the hackathon. Server and AI processing are not end-to-end encrypted.',
-              style: TextStyle(fontSize: 12, color: Color(0xff777780)),
+              style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
             ),
           ],
         ),
@@ -135,35 +135,45 @@ class _AuthScreenState extends State<AuthScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(26, 24, 26, 24),
             children: [
-              const Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 18,
-                runSpacing: 12,
-                children: [
-                  KinBrand(),
-                  KinBadge('PRIVATE BY CHOICE', icon: Icons.lock_outline),
-                ],
-              ),
-              const SizedBox(height: 30),
-              const CareArtwork(),
-              const SizedBox(height: 26),
-              Text(
-                'Care, kept simple.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 40),
               const Text(
-                'Keep your prescriptions together. Review the details. Share with the people you choose.',
-                textAlign: TextAlign.center,
+                'PERSONAL HEALTH WORKSPACE',
                 style: TextStyle(
-                  fontSize: 15,
-                  height: 1.55,
-                  color: Color(0xff777780),
+                  fontSize: 11,
+                  letterSpacing: 2,
+                  color: Color(0xffdfb77a),
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 26),
+              const SizedBox(height: 48),
+              Text(
+                'Your records.\nReady when needed.',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 18),
+              const Text(
+                'A private record of prescriptions, laboratory results and the information you choose to share.',
+                style: TextStyle(
+                  color: Color(0xff9aa8ba),
+                  fontSize: 16,
+                  height: 1.6,
+                ),
+              ),
+              const SizedBox(height: 32),
+              const KinCard(
+                title: 'One account. A clear record.',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('01   Keep originals and linked scans together'),
+                    SizedBox(height: 14),
+                    Text('02   Extract and review report details'),
+                    SizedBox(height: 14),
+                    Text('03   Choose family and emergency access'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32),
               if (widget.configured)
                 FilledButton(
                   onPressed: busy
@@ -177,7 +187,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: Color(0xff171b22),
                           ),
                         )
                       : Row(
@@ -210,7 +220,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 const Text(
                   'New here? Your first sign-in creates your account.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Color(0xff777780)),
+                  style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
                 ),
               ],
               if (widget.configured && AppConfig.localAuth)
@@ -228,7 +238,7 @@ class _AuthScreenState extends State<AuthScreen> {
               const Text(
                 'Record information, not medical advice.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 11, color: Color(0xff777780)),
+                style: TextStyle(fontSize: 11, color: Color(0xff9aa8ba)),
               ),
             ],
           ),

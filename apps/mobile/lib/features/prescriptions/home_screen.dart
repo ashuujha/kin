@@ -8,6 +8,9 @@ import '../family/family_screen.dart';
 import '../emergency/contact_screen.dart';
 import 'review_screen.dart';
 import 'history_screen.dart';
+import '../reports/reports_screen.dart';
+import '../reports/linked_screen.dart';
+import '../emergency/medical_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.repository});
@@ -19,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<RecordMap>> records;
   bool uploading = false;
-  int section = 0;
+
   @override
   void initState() {
     super.initState();
@@ -85,285 +88,241 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: section == 0
-        ? AppBar(
-            title: const KinBrand(),
-            actions: [
-              IconButton(
-                tooltip: 'Sign out',
-                icon: const Icon(Icons.logout),
-                onPressed: () async {
-                  try {
-                    await widget.repository.client.auth.signOut();
-                  } catch (_) {
-                    if (context.mounted) {
-                      showNotice(context, 'Could not sign out. Retry.');
-                    }
-                  }
-                },
-              ),
-            ],
-          )
-        : null,
-    body: section == 0
-        ? RefreshIndicator(
-            onRefresh: refresh,
-            child: ListView(
-              padding: const EdgeInsets.all(22),
-              children: [
-                const SizedBox(height: 12),
-                const Text(
-                  'WELCOME TO YOUR CARE SPACE',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.5,
-                    color: Color(0xff777780),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Your care, in one place.',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Keep your records close. Share only what matters.',
-                  style: TextStyle(color: Color(0xff777780)),
-                ),
-                const SizedBox(height: 22),
-                Container(
-                  padding: const EdgeInsets.all(23),
-                  decoration: BoxDecoration(
-                    color: const Color(0xffc4e59a),
-                    borderRadius: BorderRadius.circular(26),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const KinBadge(
-                        'PRIVATE RECORDS',
-                        icon: Icons.lock_outline,
-                        dark: true,
-                      ),
-                      const SizedBox(height: 18),
-                      const Text(
-                        'Keep a clearer\nrecord of your care.',
-                        style: TextStyle(
-                          fontSize: 27,
-                          fontWeight: FontWeight.w600,
-                          height: 1.2,
-                          letterSpacing: -.7,
-                          color: Color(0xff151525),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Add a prescription and check its details.',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Color(0xff414e32),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: FilledButton.icon(
-                          onPressed: uploading ? null : upload,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xff151525),
-                            foregroundColor: Colors.white,
-                          ),
-                          icon: uploading
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(Icons.add_rounded),
-                          label: Text(
-                            uploading
-                                ? 'Adding prescription…'
-                                : 'Add a prescription',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 184,
-                        child: KinActionCard(
-                          compact: true,
-                          title: 'Shared summary',
-                          description: 'Choose what your family sees.',
-                          icon: Icons.fact_check_outlined,
-                          onTap: () => setState(() => section = 2),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: SizedBox(
-                        height: 184,
-                        child: KinActionCard(
-                          compact: true,
-                          title: 'Contact QR',
-                          description: 'Open contacts in any browser.',
-                          icon: Icons.qr_code_2_rounded,
-                          onTap: () => setState(() => section = 4),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 26),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Prescriptions',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    TextButton(
-                      onPressed: () => setState(() => section = 1),
-                      child: const Text('View history'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'One typed English page · JPEG / PNG · up to 5 MB',
-                  style: TextStyle(fontSize: 12, color: Color(0xff777780)),
-                ),
-                FutureBuilder<List<RecordMap>>(
-                  future: records,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return KinCard(
-                        title: 'Records could not load',
-                        child: TextButton(
-                          onPressed: refresh,
-                          child: const Text('Try again'),
-                        ),
-                      );
-                    }
-                    if (!snapshot.hasData) {
-                      return const Padding(
-                        padding: EdgeInsets.all(32),
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
-                    if (snapshot.data!.isEmpty) {
-                      return const KinCard(
-                        title: 'Start with one prescription',
-                        icon: Icons.description_outlined,
-                        child: Text(
-                          'Add a prescription image above. Your reviewed records will appear here.',
-                        ),
-                      );
-                    }
-                    return Column(
-                      children: snapshot.data!
-                          .map(
-                            (doc) => Card(
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.all(18),
-                                leading: Container(
-                                  width: 42,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xfff3f3f0),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Icon(Icons.description_outlined),
-                                ),
-                                title: Text(
-                                  doc['clinic'] ?? 'Prescription',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  '${doc['prescription_date'] ?? 'Date not recorded'}\n${doc['status'] == 'reviewed'
-                                      ? 'Owner reviewed'
-                                      : doc['status'] == 'draft'
-                                      ? 'Draft · needs review'
-                                      : doc['status'] == 'failed'
-                                      ? 'Needs review · manual entry available'
-                                      : doc['status'] == 'processing'
-                                      ? 'Extraction in progress'
-                                      : 'Ready to extract'}',
-                                ),
-                                trailing: const Icon(Icons.chevron_right),
-                                onTap: () => open(
-                                  ReviewScreen(
-                                    repository: widget.repository,
-                                    document: doc,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    );
-                  },
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Your records provide context. They do not recommend treatment.',
-                  style: TextStyle(fontSize: 12, color: Color(0xff777780)),
-                ),
-              ],
-            ),
-          )
-        : switch (section) {
-            1 => HistoryScreen(repository: widget.repository),
-            2 => SummaryScreen(repository: widget.repository),
-            3 => FamilyScreen(repository: widget.repository),
-            _ => ContactScreen(repository: widget.repository),
-          },
-    bottomNavigationBar: NavigationBar(
-      selectedIndex: section,
-      onDestinationSelected: (value) {
-        setState(() => section = value);
-        if (value == 0) refresh();
-      },
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home_rounded),
-          label: 'Home',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.history_outlined),
-          selectedIcon: Icon(Icons.history_rounded),
-          label: 'History',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.fact_check_outlined),
-          selectedIcon: Icon(Icons.fact_check_rounded),
-          label: 'Summary',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.people_outline),
-          selectedIcon: Icon(Icons.people_rounded),
-          label: 'Family',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.qr_code_2_rounded),
-          label: 'Contact QR',
+    appBar: AppBar(
+      title: const Text('Personal workspace'),
+      actions: [
+        IconButton(
+          tooltip: 'Refresh records',
+          onPressed: refresh,
+          icon: const Icon(Icons.refresh_rounded),
         ),
       ],
+    ),
+    drawer: Drawer(
+      child: SafeArea(
+        child: ListView(
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(24, 30, 24, 8),
+              child: Text(
+                'YOUR WORKSPACE',
+                style: TextStyle(
+                  fontSize: 11,
+                  letterSpacing: 2,
+                  color: Color(0xffdfb77a),
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(24, 8, 24, 24),
+              child: Text(
+                'Health records',
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.dashboard_outlined),
+              title: const Text('Overview'),
+              selected: true,
+              onTap: () => Navigator.pop(context),
+            ),
+            ...<({String title, IconData icon, Widget screen})>[
+              (
+                title: 'Prescriptions',
+                icon: Icons.description_outlined,
+                screen: HistoryScreen(repository: widget.repository),
+              ),
+              (
+                title: 'Laboratory reports',
+                icon: Icons.biotech_outlined,
+                screen: ReportsScreen(repository: widget.repository),
+              ),
+              (
+                title: 'Drive & linked files',
+                icon: Icons.folder_open_outlined,
+                screen: LinkedScreen(repository: widget.repository),
+              ),
+              (
+                title: 'Selected summary',
+                icon: Icons.fact_check_outlined,
+                screen: SummaryScreen(repository: widget.repository),
+              ),
+              (
+                title: 'Family invitations',
+                icon: Icons.people_outline,
+                screen: FamilyScreen(repository: widget.repository),
+              ),
+              (
+                title: 'Emergency medical QR',
+                icon: Icons.emergency_outlined,
+                screen: MedicalScreen(repository: widget.repository),
+              ),
+              (
+                title: 'Contact card',
+                icon: Icons.call_outlined,
+                screen: ContactScreen(repository: widget.repository),
+              ),
+            ].map(
+              (item) => ListTile(
+                leading: Icon(item.icon),
+                title: Text(item.title),
+                onTap: () {
+                  Navigator.pop(context);
+                  open(item.screen);
+                },
+              ),
+            ),
+
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout_rounded),
+              title: const Text('Sign out'),
+              onTap: () async {
+                Navigator.pop(context);
+                try {
+                  await widget.repository.client.auth.signOut();
+                } catch (_) {
+                  if (context.mounted) {
+                    showNotice(context, 'Could not sign out. Retry.');
+                  }
+                }
+              },
+            ),
+            const Padding(
+              padding: EdgeInsets.all(24),
+              child: Text(
+                'Fictional records only · hackathon release',
+                style: TextStyle(fontSize: 11, color: Color(0xff9aa8ba)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+    body: RefreshIndicator(
+      onRefresh: refresh,
+      child: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          const SizedBox(height: 12),
+          const Text(
+            'RECORD OVERVIEW',
+            style: TextStyle(
+              fontSize: 11,
+              letterSpacing: 2,
+              color: Color(0xffdfb77a),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'Your health record.',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Prescriptions, laboratory results and linked scans. Organized around you.',
+            style: TextStyle(color: Color(0xff9aa8ba)),
+          ),
+          const SizedBox(height: 24),
+          FutureBuilder<List<RecordMap>>(
+            future: records,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return KinCard(
+                  title: 'Records unavailable',
+                  child: TextButton(
+                    onPressed: refresh,
+                    child: const Text('Retry'),
+                  ),
+                );
+              }
+              if (!snapshot.hasData) return const LinearProgressIndicator();
+              final docs = snapshot.data!;
+              final reviewed = docs
+                  .where((d) => d['status'] == 'reviewed')
+                  .length;
+              return Row(
+                children: [
+                  Expanded(
+                    child: KinCard(
+                      title: 'Prescriptions',
+                      child: Text(
+                        '${docs.length}',
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: KinCard(
+                      title: 'Reviewed',
+                      child: Text(
+                        '$reviewed',
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Add to your record',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 10),
+          KinActionCard(
+            title: 'Prescription',
+            description: 'Upload an image and review its details.',
+            icon: Icons.add_photo_alternate_outlined,
+            onTap: upload,
+          ),
+          if (uploading) const LinearProgressIndicator(),
+          KinActionCard(
+            title: 'Laboratory report',
+            description: 'Import a PDF or image. View extracted results.',
+            icon: Icons.biotech_outlined,
+            onTap: () => open(ReportsScreen(repository: widget.repository)),
+          ),
+          KinActionCard(
+            title: 'Drive & linked scans',
+            description: 'Keep large DICOM files in your own storage.',
+            icon: Icons.folder_open_outlined,
+            onTap: () => open(LinkedScreen(repository: widget.repository)),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Access, when it matters',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 10),
+          KinActionCard(
+            title: 'Emergency medical QR',
+            description: 'Optional selected medical access without login.',
+            icon: Icons.emergency_outlined,
+            onTap: () => open(MedicalScreen(repository: widget.repository)),
+          ),
+          KinActionCard(
+            title: 'Family invitations',
+            description: 'Private, account-bound access for 24 hours.',
+            icon: Icons.people_outline,
+            onTap: () => open(FamilyScreen(repository: widget.repository)),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Extracted details require your review. Prescription entries do not establish current medication use.',
+            style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
+          ),
+        ],
+      ),
     ),
   );
 }

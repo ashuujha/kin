@@ -1,8 +1,8 @@
 export const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
-export function captureLink(location: Pick<Location, 'pathname' | 'hash'>): {kind: 's' | 'e'; token: string} | null {
+export function captureLink(location: Pick<Location, 'pathname' | 'hash'>): {kind: 's' | 'e' | 'm'; token: string} | null {
   const kind = location.pathname.replace(/\/$/, '');
   const token = location.hash.slice(1);
-  if ((kind === '/s' || kind === '/e') && TOKEN_PATTERN.test(token)) return {kind: kind.slice(1) as 's' | 'e', token};
+  if ((kind === '/s' || kind === '/e' || kind === '/m') && TOKEN_PATTERN.test(token)) return {kind: kind.slice(1) as 's' | 'e' | 'm', token};
   return null;
 }
 export async function hashToken(token: string): Promise<string> {

@@ -1,3 +1,13 @@
+# Expanded workspace · 0.2.0 candidate
+
+Flutter analysis and ten tests passed, including direct-link validation, private-network rejection, side navigation and emergency consent. The drawer and emergency-consent tests cover a 320px-wide phone and a disabled publish action until owner consent. The dark sign-in/home screens were rendered and checked at 320px and 390px; actual images replace the previous screenshots. Signed Android compilation and the physical-device Google walkthrough are pending.
+
+Hosted database checks passed: all 29 existing authorization assertions plus 16 new linked-file, laboratory and opt-in emergency assertions. Tests ran in rolled-back fictional-fixture transactions. The migration and extraction/emergency endpoints are deployed.
+
+A real hosted PDF/Gemma request extracted the fictional blood-report fixture, including glucose 110 mg/dL and its literal high flag. The expanded hosted HTTP flow passed private Drive references, PDF upload, cross-user denial, extraction, owner review, anonymous selected medical access, exclusion of original paths/private excerpts/Drive links, token rotation, revocation and deletion invalidation. Temporary test sessions are not proof of physical-device Google login.
+
+Dr Lal PathLabs’ report portal was researched; it requires Lab/Visit ID and password. The app offers a portal shortcut and imported-file extraction. It does not claim an authorized automatic lab connector or automatic access to private Drive content.
+
 # Reference UI release · 0.1.4
 
 The [signed Android build](https://github.com/ashuujha/kin/actions/runs/37926670811) passed analysis, six Flutter tests and release compilation from `9efdbb42550156bb263c60d3fc53631d9f08f6c2`. The [publishing job](https://github.com/ashuujha/kin/actions/runs/37927329084) uploaded all three CPU builds and checksums directly from GitHub. The [public release](https://github.com/ashuujha/kin/releases/tag/v0.1.4-hosted) is available. ARM64 is 19,390,720 bytes; ARMv7 is 16,897,740 bytes.

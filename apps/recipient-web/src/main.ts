@@ -25,7 +25,7 @@ if (captured) {
 let poll: ReturnType<typeof setInterval> | undefined;
 let expiration: ReturnType<typeof setTimeout> | undefined;
 let generation = 0;
-let activeKind: 'summary' | 'contacts' | null = null;
+let activeKind: 'summary' | 'contacts' | 'emergency' | null = null;
 function clearDisplay() {
   generation++; clearInterval(poll); clearTimeout(expiration); main.replaceChildren();
 }
@@ -144,6 +144,32 @@ async function loadContacts() {
   // The contact service may be revoked too; recheck on foreground and periodically.
   poll=setInterval(()=>{void showContacts();},30000);
 }
+async function showEmergency() {
+  if (!client) return;
+  clearDisplay();activeKind='emergency';const current=generation;
+  const token=sessionStorage.getItem('kin.m.token');
+  if(!token){message('Emergency summary unavailable','Scan the owner’s emergency medical QR.');return;}
+  heading('EMERGENCY / OWNER-CHOSEN MEDICAL INFORMATION','Opening emergency summary…','No login or app installation required.');
+  try {
+    const {data,error}=await withDeadline(client.functions.invoke('emergency-medical',{body:{token}}));
+    if(current!==generation)return;
+    if(error||!data){message('Emergency access unavailable','The QR may have been revoked. No medical information is displayed.',showEmergency);return;}
+    const s=data as {display_name:string;allergies:string[];medicines:Summary['medicines'];notes:string;updated_at:string;labs:{title:string;report_date:string|null;laboratory:string|null;results:{test:string;value:string|null;unit:string|null;reference_range:string|null;report_flag:string}[]}[]};
+    main.replaceChildren();heading('PUBLIC EMERGENCY / OWNER OPT-IN',`${s.display_name}’s emergency summary`,'The owner chose to make this snapshot readable by anyone with this QR. Owner review is not clinical verification.');
+    main.append(element('p',`Snapshot published ${formatTime(s.updated_at)}. Confirm current treatment directly; prescription records do not prove current use.`,'notice'));
+    const allergies=card('Owner-reported allergies');
+    if(!s.allergies.length)allergies.append(element('p','Not recorded; this does not establish absence of allergies.'));
+    for(const allergy of s.allergies)allergies.append(element('p',allergy));main.append(allergies);
+    const medicines=card('Selected prescription medicines');
+    if(!s.medicines.length)medicines.append(element('p','No medicines selected.'));
+    for(const m of s.medicines){const item=element('article',undefined,'medicine');item.append(element('h3',m.name),field('Prescribed dosage',m.dosage),field('Frequency',m.frequency),field('Duration',m.duration),field('Prescription date',m.prescription_date),field('Owner-reported use',m.taking_status==='taking'?'Reported taking':m.taking_status==='stopped'?'Reported stopped':'Not confirmed'));medicines.append(item);}main.append(medicines);
+    for(const lab of s.labs){const block=card(lab.title);block.append(field('Laboratory',lab.laboratory),field('Report date',lab.report_date));for(const r of lab.results){const item=element('article',undefined,'medicine');item.append(element('h3',r.test),field('Reported value',r.value),field('Unit',r.unit),field('Source reference range',r.reference_range),field('Laboratory flag',r.report_flag));block.append(item);}main.append(block);}
+    if(s.notes){const notes=card('Owner’s notes');notes.append(element('p',s.notes,'preserve-lines'));main.append(notes);}
+    main.append(element('p','Original files, full history and external Drive links are not included. This page does not diagnose or recommend treatment.','fine-print'));
+    poll=setInterval(()=>{void showEmergency();},15000);
+  }catch{if(current===generation)message('Emergency access could not be checked','Medical information is hidden. Retry when connected.',showEmergency);}
+}
+
 async function route() {
   const path=appPath();
   if (path==='/privacy') {
@@ -152,16 +178,17 @@ async function route() {
     for (const [title,text] of [
       ['Account access','Google sign-in identifies your account using your basic profile and email. Kin does not request Google Drive or Gmail access.'],
       ['Private records','Prescription images and history are accessible to their owner. Requesting AI extraction sends the selected image to the configured AI provider through the server. The server and provider process readable data; end-to-end encryption is not claimed.'],
-      ['Selected sharing','Medical invitations show a selected summary to the invited Google account for 24 hours. Originals and full history remain private. Public contact cards show chosen contacts to anyone with their link.'],
+      ['Selected sharing','Medical invitations show a selected summary to the invited Google account for 24 hours. Originals and full history remain private. Public contact cards show chosen contacts to anyone with their link. A separate emergency medical QR is available only after the owner explicitly opts in; anyone holding it can read its selected medical snapshot without login.'],
       ['Your controls','You can delete prescriptions and revoke invitations or contact cards. Revocation stops future access, but cannot erase existing copies. Account erasure and backup retention still require operator handling.'],
       ['Hackathon use','Use fictional records for this hackathon build. Kin provides information from records and does not diagnose, prescribe or recommend treatment.'],
     ]) {const block=card(title);block.append(element('p',text));main.append(block);}
     return;
   }
-  if (!client && ['/e','/s','/auth/callback'].includes(path)) {
+  if (!client && ['/e','/m','/s','/auth/callback'].includes(path)) {
     message('Service not connected','This build is not connected to the sharing service. Ask the owner for a link from the configured app.');return;
   }
   if (path==='/e') await showContacts();
+  else if(path==='/m')await showEmergency();
   else if (path==='/s' || path==='/auth/callback') {
     // getSession waits for the SDK’s PKCE callback handling before accepting the pending link.
     await client?.auth.getSession();
@@ -181,6 +208,7 @@ async function route() {
 document.addEventListener('visibilitychange',()=>{
   if (document.hidden) clearDisplay();
   else if (activeKind==='contacts') void showContacts();
+  else if (activeKind==='emergency') void showEmergency();
   else void route();
 });
 client?.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'){clearDisplay();}});

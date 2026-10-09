@@ -12,14 +12,14 @@ Schema: {"prescription_date":"YYYY-MM-DD or null","clinic":"string or null",
 "source_excerpt":"literal supporting text from image or null"}]}. Use actual JSON nulls.
 Return at most 30 medicines and no extra prose. This is information extraction only.`;
 
-export async function extract(bytes: Uint8Array, mime: string) {
+export async function generate(instruction: string, bytes?: Uint8Array, mime?: string, sourceText?: string) {
   const key = Deno.env.get("AI_API_KEY");
   const provider = Deno.env.get("AI_PROVIDER") ?? "digitalocean";
   const model = Deno.env.get("AI_MODEL") ?? "gemma-4-31B-it";
   if (!key) throw new HttpError(503, "AI is not configured. You can enter fields manually.");
   if (!/^[A-Za-z0-9_.-]+$/.test(model)) throw new HttpError(503, "Invalid AI model configuration");
   let binary = "";
-  for (let start=0;start<bytes.length;start+=8192) binary += String.fromCharCode(...bytes.subarray(start,start+8192));
+  for (let start=0;start<(bytes?.length ?? 0);start+=8192) binary += String.fromCharCode(...bytes!.subarray(start,start+8192));
   const base64 = btoa(binary);
   let url: string; let body: unknown; let headers: Record<string,string>;
   if (provider === "digitalocean") {
@@ -27,14 +27,14 @@ export async function extract(bytes: Uint8Array, mime: string) {
     headers = {"Content-Type":"application/json", "Authorization":`Bearer ${key}`};
     body = {model, temperature:0, max_tokens:4000, messages:[
       {role:"system",content:instruction},
-      {role:"user",content:[{type:"text",text:"Extract the fields from this prescription."},
-        {type:"image_url",image_url:{url:`data:${mime};base64,${base64}`}}]},
+      {role:"user",content:[{type:"text",text:"Transcribe the supplied document using the schema."},
+        ...(bytes ? [{type:"image_url",image_url:{url:`data:${mime};base64,${base64}`}}] : [{type:"text",text:sourceText}])]},
     ]};
   } else if (provider === "google") {
     // Use fictional records only; Google's terms prohibit sensitive uploads and clinical use.
     url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     headers = {"Content-Type":"application/json", "x-goog-api-key":key};
-    body = {contents:[{role:"user",parts:[{text:instruction},{inline_data:{mime_type:mime,data:base64}}]}],
+    body = {contents:[{role:"user",parts:[{text:instruction},...(bytes ? [{inline_data:{mime_type:mime,data:base64}}] : [{text:sourceText}])]}],
       generationConfig:{temperature:0,maxOutputTokens:4000,
         ...(model.startsWith("gemma-4-") ? {thinkingConfig:{thinkingLevel:"minimal"}} : {})}};
   } else throw new HttpError(503,"Unsupported AI provider");
@@ -47,6 +47,11 @@ export async function extract(bytes: Uint8Array, mime: string) {
     const raw = provider === "google" ? googleAnswer(result)
       : result.choices?.[0]?.message?.content;
     if (typeof raw !== "string") throw new Error();
-    return parseDraft(raw);
+    return raw;
   } catch { throw new HttpError(502,"AI returned an invalid draft. Retry or enter fields manually."); }
+}
+
+export async function extract(bytes: Uint8Array, mime: string) {
+ try {return parseDraft(await generate(instruction,bytes,mime));}
+ catch(error){if(error instanceof HttpError)throw error;throw new HttpError(502,"AI returned an invalid draft. Retry or enter fields manually.");}
 }

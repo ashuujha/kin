@@ -1,6 +1,6 @@
 import {copyFileSync,mkdirSync} from 'node:fs';
 const dist='apps/recipient-web/dist';
-for(const path of ['s','e','privacy','auth/callback']) {
+for(const path of ['s','e','m','privacy','auth/callback']) {
   mkdirSync(`${dist}/${path}`,{recursive:true});
   copyFileSync(`${dist}/index.html`,`${dist}/${path}/index.html`);
 }

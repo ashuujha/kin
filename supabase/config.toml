@@ -44,9 +44,18 @@ enabled = true
 file_size_limit = "5MiB"
 
 [functions.extract-prescription]
+import_map = "./functions/deno.json"
 # The function verifies the JWT with auth.getUser before touching records.
 # This supports modern Supabase signing keys as well as legacy local JWTs.
 verify_jwt = false
 
 [functions.emergency-contact]
 verify_jwt = false
+import_map = "./functions/deno.json"
+
+[functions.extract-lab]
+verify_jwt = false
+import_map = "./functions/deno.json"
+[functions.emergency-medical]
+verify_jwt = false
+import_map = "./functions/deno.json"

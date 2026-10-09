@@ -27,7 +27,7 @@ Enforce ownership with RLS; do not rely on UI checks or trust client-provided ow
 Google authentication verifies account control, not relationships or professional credentials.
 Private originals and draft extraction never appear in recipient responses.
 Medical shares expire 24 hours from creation; check revocation and expiry on every request.
-Anonymous contact links contain no medical information.
+Anonymous contact links contain no medical information. A separate owner-opted-in emergency medical QR intentionally exposes a selected snapshot without login. Enforce consent, hash tokens, check revocation on every read, and exclude originals, unreviewed drafts and external report URLs.
 AI output is untrusted draft data. Missing values stay unknown; owner review is not clinical verification.
 Lookup reads reviewed records directly. Do not add vectors, agents, diagnosis or interaction advice.
 Never describe a feature or provider call as working until it has been tested.

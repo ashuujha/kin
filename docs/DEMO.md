@@ -3,8 +3,7 @@
 Do not claim a live feature based on mocked data. Local tests use fictional
 identities and synthetic fixtures; Google identity verification in SQL tests is
 not an external OAuth login. The WhatsApp architecture screenshot is not input
-medical evidence. Live provider credentials and public project URL are not yet
-available in this development session.
+medical evidence. Hosted Supabase, Google configuration and AI extraction are connected. See the current validation record for actual service checks and the remaining phone walkthrough.
 
 Compiled APK and passing checks are recorded in [VALIDATION.md](VALIDATION.md).
 The real local API integration test can be run after `supabase start` with
@@ -42,6 +41,16 @@ not bypass the production recipient RPC requirement for a confirmed Google ident
 
 ## Pending live checks
 - Actual Google login + Android deep-link return on the chosen physical phone.
-- Actual Gemma request on the configured provider, using fictional input only.
+- Physical-phone lab PDF import and extraction (hosted fictional PDF/Gemma check passed).
 - Public HTTPS browser callback, security headers and allowed-origin configuration.
 - Phone upload/review, browser acceptance, polling revocation and contact scan.
+
+## Expanded workspace demo
+
+Open the side navigation. Save a fictional Drive/DICOM link and show that only its owner can see it. Explain that large imaging files remain in the user’s own Drive, with its access permissions.
+
+Import `fixtures/labs/fictional-blood-report.pdf` or its public direct-file link. AI automatically creates draft test/value/unit/range fields and a source-based summary. Compare the draft with the original, approve it, and open the saved report. The glucose high flag is explicitly printed in the fictional source; Kin does not infer a diagnosis.
+
+Publish a selected summary, open Emergency medical QR, select the reviewed lab report, and explicitly enable the public-access checkbox. Scan this separate QR in a signed-out browser: selected medical data appears without installation or Google login. Explain that anyone holding this opt-in QR can read it; it is not limited to verified doctors. Revoke it and show access ending. Private family invitations remain a distinct Google-bound route.
+
+The Dr Lal PathLabs button opens its actual password-protected portal. Download through the provider’s own flow, then import the PDF. Do not present this as an automated provider API integration.

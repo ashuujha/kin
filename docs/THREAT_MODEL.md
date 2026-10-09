@@ -11,6 +11,8 @@
 | Oversized or disguised file | 5 MB bucket cap, MIME allowlist, server/client signatures | No antivirus or full image-decoder sandbox; typed image scope only |
 | Model key leaks | Server environment only; frontend public keys only | Operator access and provider compromise need operational controls |
 | Anonymous endpoint abuse | Shared database rate counters, per-token and global limits | Conservative global cap can cause denial of service; no distributed WAF |
+| Copied emergency medical QR | Off by default; explicit owner opt-in; selected reviewed snapshot; token rotation/revocation | Anyone holding or forwarding the QR can read the snapshot; doctor identity is not verified |
+| External report link targets private infrastructure | Downloads occur on the owner phone, bounded to 5 MB; HTTPS only; private addresses rejected; every redirect revalidated | Lab login/OTP pages and private Drive files require owner download; no universal provider connector |
 | Owner overshares accidentally | Explicit selected publication and fixed invitation snapshots | Users can still knowingly or accidentally publish sensitive notes |
 | Mobile screenshots/backups | FLAG_SECURE; Android backup disabled; secure session/PKCE storage | Rooted/compromised devices and gallery originals are not protected |
 
