@@ -33,12 +33,16 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - run: npm run local:keys
       - run: npx supabase start -x studio,logflare,vector,imgproxy,realtime,postgres-meta
       - run: npx supabase test db
       - run: npm run test:integration
         env:
           KIN_TEST_AI_UNCONFIGURED: '1'
           KIN_INTEGRATION_START_FUNCTIONS: '1'
+      - run: npm run test:proxy
+        env:
+          KIN_PROXY_START_SERVER: '1'
       - run: npx supabase stop
         if: always()
   mobile:

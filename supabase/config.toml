@@ -28,6 +28,10 @@ additional_redirect_urls = ["http://127.0.0.1:5173/auth/callback", "dev.ashuujha
 enable_signup = true
 enable_anonymous_sign_ins = false
 jwt_expiry = 3600
+signing_keys_path = "./signing-keys.local.json"
+jwt_secret = "env(KIN_LOCAL_JWT_SECRET)"
+anon_key = "env(KIN_LOCAL_ANON_KEY)"
+service_role_key = "env(KIN_LOCAL_SERVICE_KEY)"
 
 [auth.external.google]
 enabled = false

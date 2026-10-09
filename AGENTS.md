@@ -14,7 +14,9 @@ Use fictional medical records for development and demos. Never commit credential
 - Browser: `npm run dev -w apps/recipient-web`, `npm run typecheck -w apps/recipient-web`.
 - Mobile: `flutter pub get`, `flutter analyze`, `flutter test` in `apps/mobile`.
 - One Dart file: `dart format lib/path.dart`; one test: `flutter test test/path_test.dart`.
-- Database: `npx supabase start`, `npx supabase test db` (Docker required).
+- Database: `npm run local:start`, `npx supabase test db` (Docker/Python 3 required).
+- CI startup: `npm run local:keys` before `supabase start`; never expose raw development ports.
+- Local HTTPS proxy: `npm run test:proxy` checks privileged/forged tokens against actual HTTP.
 - HTTP flow: `npm run test:integration` against local Supabase only; Google identity fixtures are synthetic.
 - Backend tests: `npm run test:backend`; database tests must run before changing access policies.
 

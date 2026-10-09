@@ -52,18 +52,21 @@ graphify-out/            Interactive architecture graph, data and audit report
 
 Requirements: Node 22+, Docker, Flutter **3.47.7**. Java/Android SDK are needed for
 local APK builds; GitHub Actions can build the APK without local Android tooling.
+The isolated laptop starter also uses Python 3 and a local Unix Docker socket.
 For the configured fictional phone demo and temporary HTTPS receiver, follow
 [the local walkthrough](docs/LOCAL_DEMO.md).
 
 ```sh
 npm ci
-npx supabase start
-npx supabase status
+npm run local:start
 ```
 
 Copy the local API URL and public anon key into the ignored
 `apps/recipient-web/.env.local`, using `.env.example` as the template. Do not use
-the service-role key in either client.
+the service-role key in either client. `npm run local:configure` writes local
+client profiles without printing credentials. The starter generates ignored
+private signing keys, keeps CLI credential output private, and binds raw
+development ports to localhost. Follow the local walkthrough for phone HTTPS.
 
 ```sh
 npm run dev -w apps/recipient-web

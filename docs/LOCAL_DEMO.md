@@ -7,16 +7,26 @@ they are not opened to anonymous users to make the demo easier.
 
 ## Start the backend
 
-Requirements: Node 22+, Docker, and the repository's locked dependencies.
+Requirements: Node 22+, Docker with a local Unix socket, Python 3, and the
+repository's locked dependencies. The explicit binding helper was tested on this
+Linux laptop with Docker Desktop.
 
 ```sh
 npm ci
-npx supabase start -x studio,logflare,vector,imgproxy,realtime,postgres-meta
+npm run local:start
 npm run local:configure -- 127.0.0.1
-npx supabase functions serve --env-file supabase/.env.local
+npx supabase functions serve --env-file supabase/.env.local --network-id kin-loopback
 ```
 
-Keep the function command running. The configure helper creates a fictional owner
+Keep the function command running. The starter creates private Auth signing
+keys and stable API credentials in ignored `supabase/signing-keys.local.json` and
+root `.env`, both with owner-only permissions. It binds raw API, database and mail
+ports explicitly to localhost. Gateway configuration is preserved in local Docker
+snapshots during binding; those contain credentials and must never be published
+to a registry. Startup CLI output stays in ignored
+`supabase/.temp/local-start.log` and must not be shared.
+
+The configure helper creates a fictional owner
 and writes its credentials to the ignored root `.env.local` with owner-only file
 permissions. It writes only the public anon key to client configuration. Existing
 provider secrets are preserved. Do not paste credentials or CLI status output into
@@ -30,9 +40,19 @@ npm run local:receiver -- 0.0.0.0
 ```
 
 The receiver serves production assets on port 5173 and proxies the required local
-APIs under `/backend`. It does not expose the Vite development server, repository
-files, signup or admin auth routes. Original-file reads still need an owner JWT
-and pass storage RLS. Local password login is intended for fictional tests.
+APIs under `/backend`. It accepts only verified ES256 user sessions signed by the
+project's private key or an exact public anon identifier. Legacy user/service
+tokens, privileged API keys, query credential overrides and signed-storage routes
+are rejected. It translates an older preview's exact public anon identifier to
+the current upstream anon credential; that identifier grants no user identity or
+extra permissions. Original-file reads still require owner RLS. It exposes neither
+the Vite server nor repository files, signup or admin auth routes.
+
+CLI development defaults include public signing credentials. The project creates
+private replacements and checks the proxy's public boundary. See the
+[CLI defaults](https://github.com/supabase/cli/blob/v2.120.0/apps/cli-go/pkg/config/config.go)
+and [official local network guidance](https://supabase.com/docs/guides/local-development).
+Raw services must stay local. Use this profile for fictional tests.
 
 ## Use a temporary HTTPS address
 
@@ -55,8 +75,8 @@ npm run local:configure -- 127.0.0.1 https://YOUR-TUNNEL.trycloudflare.com
 The Android configuration now points to the HTTPS `/backend` endpoint. The receiver
 uses its own origin, so browser API requests stay on HTTPS. A new tunnel hostname
 requires a new configured APK. Keep Docker, functions, receiver and tunnel running
-throughout the phone test. A LAN-only alternative uses the laptop's private IPv4
-address in `local:configure`; that path is debug HTTP, not secure public sharing.
+throughout the phone test. The isolated starter intentionally prevents direct
+phone access to raw Supabase ports. Use the HTTPS receiver for this walkthrough.
 
 ## Build and install Android
 
@@ -82,7 +102,8 @@ conflict, remove that preview before installing; this clears its local session.
    in using the fictional account in the laptop's ignored `.env.local`.
 2. Download `fixtures/prescriptions/typed-example.png` from the public repository
    onto the phone. Upload it as an image in Kin. Use no real medical records.
-3. Extraction should report that AI is not configured. Enter the fictional
+3. Tap **Extract with Gemma**. This profile has no model key, so extraction should
+   fail and offer manual entry without saving an AI result. Enter the fictional
    prescription fields manually, review them, and save. Search the reviewed
    medicine and the explicit prescription date.
 4. Publish a summary with selected fields. A private medical invitation can be
@@ -102,6 +123,7 @@ account acceptance, complete Google setup and the walkthrough in [DEMO.md](DEMO.
 ```sh
 npx supabase test db
 KIN_TEST_AI_UNCONFIGURED=1 npm run test:integration
+KIN_PROXY_ORIGIN=https://YOUR-TUNNEL.trycloudflare.com npm run test:proxy
 KIN_RECEIVER_ORIGIN=https://YOUR-TUNNEL.trycloudflare.com npm run test:receiver:live
 ```
 
@@ -116,3 +138,10 @@ For isolated CI, `KIN_INTEGRATION_START_FUNCTIONS=1` lets the integration test s
 and stop its function runtime. Do not set this while a separate function server is
 already running. Stop the tunnel to remove public access; stop local services when
 finished. Follow [VALIDATION.md](VALIDATION.md) for observed results and pending work.
+
+Before changing local credentials, stop functions and the receiver, run
+`npx supabase stop`, then `npm run local:start`. After a CLI restart, use the
+starter or `npm run local:bind` to reapply and verify explicit localhost bindings.
+Do not reset the database as part of this walkthrough. A new backend key can be
+used by a newly configured APK; the existing preview's public identifier remains
+compatible through the local proxy while its ignored phone profile is retained.
