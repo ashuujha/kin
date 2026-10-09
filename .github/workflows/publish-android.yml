@@ -1,0 +1,71 @@
+name: Publish signed Android release
+on:
+  workflow_dispatch:
+    inputs:
+      build_run:
+        description: 'Successful Android APK release build run ID'
+        required: true
+        type: string
+      version:
+        description: 'Version, for example 0.1.4'
+        required: true
+        type: string
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      KIN_BUILD_RUN: ${{ inputs.build_run }}
+      KIN_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify successful source build
+        id: source
+        run: |
+          python3 - <<'PY'
+          import json, os, re, subprocess
+          run = os.environ['KIN_BUILD_RUN']
+          version = os.environ['KIN_VERSION']
+          if not run.isdigit() or not re.fullmatch(r'\d+\.\d+\.\d+', version):
+              raise SystemExit('Invalid release inputs')
+          data = json.loads(subprocess.check_output(['gh', 'run', 'view', run, '--json', 'name,status,conclusion,headSha']))
+          if data['name'] != 'Android APK' or data['status'] != 'completed' or data['conclusion'] != 'success':
+              raise SystemExit('Release requires a successful Android APK run')
+          pubspec = subprocess.check_output(['git', 'show', data['headSha'] + ':apps/mobile/pubspec.yaml'], text=True)
+          if not re.search(r'^version: ' + re.escape(version) + r'\+\d+$', pubspec, re.M):
+              raise SystemExit('Version does not match the compiled source')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('commit=' + data['headSha'] + '\n')
+          PY
+      - name: Download signed build
+        run: gh run download "$KIN_BUILD_RUN" --name kin-android-release --dir release
+      - name: Prepare public files and notes
+        env:
+          KIN_COMMIT: ${{ steps.source.outputs.commit }}
+        run: |
+          python3 - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          folder = Path('release')
+          version = os.environ['KIN_VERSION']
+          checksums = []
+          for abi, label in [('arm64-v8a', 'arm64'), ('armeabi-v7a', 'armv7'), ('x86_64', 'x86_64')]:
+              source = folder / f'app-{abi}-release.apk'
+              target = folder / f'kin-{version}-hosted-{label}.apk'
+              source.rename(target)
+              checksums.append(hashlib.sha256(target.read_bytes()).hexdigest() + '  ' + target.name)
+          (folder / 'SHA256SUMS.txt').write_text('\n'.join(checksums) + '\n')
+          Path('release-notes.md').write_text(f"Kin {version} uses the healthcare UI reference: white surfaces, pale green accents, dark rounded actions, compact sharing cards and an original record illustration.\n\nGoogle-only sign-in, hosted private records, Gemma draft extraction, owner review, history and browser-based sharing are connected. Use fictional records. AI drafts require comparison with the original; Kin does not recommend treatment.\n\nThe build passed Flutter analysis/tests and release compilation. It uses the persistent Kin signing certificate. Uninstall older debug previews first; installed 0.1.3 hosted builds can update. Real physical-device Google return and a two-account walkthrough remain pending.\n\nBuilt from {os.environ['KIN_COMMIT']} in Actions run {os.environ['KIN_BUILD_RUN']}. Checksums are attached. ARM64 suits most modern phones, ARMv7 older phones. Android 7 or later. Hackathon prerelease; not a Play Store release.\n")
+          PY
+      - name: Publish APKs and checksums
+        env:
+          KIN_COMMIT: ${{ steps.source.outputs.commit }}
+        run: >-
+          gh release create "v${KIN_VERSION}-hosted" release/*.apk release/SHA256SUMS.txt
+          --target "$KIN_COMMIT" --prerelease --title "Kin ${KIN_VERSION} — Hosted Android preview"
+          --notes-file release-notes.md
