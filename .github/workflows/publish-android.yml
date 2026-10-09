@@ -24,6 +24,8 @@ jobs:
       KIN_VERSION: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
       - name: Verify successful source build
         id: source
         run: |
