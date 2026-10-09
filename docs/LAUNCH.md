@@ -2,13 +2,13 @@
 
 ## Current Kin deployment
 
-The 0.1.3 signed hosted preview uses Supabase project `wbhjgppzyhqlagjxyzrn`,
+The 0.1.4 signed hosted preview uses Supabase project `wbhjgppzyhqlagjxyzrn`,
 the [browser receiver](https://ashuujha.github.io/kin/) and the
 [download website](https://kin-care-ten.vercel.app/). Migrations, private storage,
 Google provider configuration and server-only Google Gemma extraction are deployed.
 See [the validation record](VALIDATION.md) for tested flows and remaining device checks.
 
-Uninstall the older debug-signed preview, install 0.1.3, and start a fresh
+Uninstall the older debug-signed preview, install 0.1.4, and start a fresh
 **Continue with Google** attempt from the app. Do not open the Supabase callback
 URL directly: it requires the state created by a sign-in attempt. If Google is
 in Testing, add the owner, recipient and judge accounts as test users.

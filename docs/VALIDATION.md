@@ -1,3 +1,11 @@
+# Reference UI release · 0.1.4
+
+The [signed Android build](https://github.com/ashuujha/kin/actions/runs/37926670811) passed analysis, six Flutter tests and release compilation from `9efdbb42550156bb263c60d3fc53631d9f08f6c2`. The [publishing job](https://github.com/ashuujha/kin/actions/runs/37927329084) uploaded all three CPU builds and checksums directly from GitHub. The [public release](https://github.com/ashuujha/kin/releases/tag/v0.1.4-hosted) is available. ARM64 is 19,390,720 bytes; ARMv7 is 16,897,740 bytes.
+
+The full public ARM64 download matched its SHA-256. Archive CRCs, ARM64 libraries, compiled hosted URL and the persistent signing certificate were verified. It can update the signed 0.1.3 hosted app. Older debug builds require removal first.
+
+The reference-based redesign uses white surfaces, pale green highlights, dark pill buttons, compact sharing cards and an original medical-record illustration. Actual Flutter sign-in/home renders were exported and visually reviewed; both 320px and 390px layouts passed overflow checks. The website uses those actual images with versioned image URLs. Hosted services and the remaining physical-device Google walkthrough status below still apply.
+
 # Hosted release status · 9 October 2026
 
 The signed [0.1.3 hosted build](https://github.com/ashuujha/kin/actions/runs/37922512583) passed release compilation, Flutter analysis and tests. ARM64 is 19,390,840 bytes; ARMv7 is 16,897,864 bytes. Archive CRCs, CPU libraries, compiled hosted Supabase URL and the persistent distribution certificate were checked. Public APKs and SHA-256 checksums are attached to the [prerelease](https://github.com/ashuujha/kin/releases/tag/v0.1.3-hosted). Uninstall older debug-signed previews before installing.
