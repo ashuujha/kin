@@ -1,14 +1,14 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(27);
+select plan(29);
 
 insert into auth.users(id,email,email_confirmed_at) values
  ('10000000-0000-0000-0000-000000000001','owner@example.test',now()),
  ('10000000-0000-0000-0000-000000000002','family@example.test',now()),
  ('10000000-0000-0000-0000-000000000003','stranger@example.test',now());
 insert into auth.identities(id,user_id,provider_id,provider,identity_data) values
- ('20000000-0000-0000-0000-000000000002','10000000-0000-0000-0000-000000000002','fiction-family','google','{}'),
- ('20000000-0000-0000-0000-000000000003','10000000-0000-0000-0000-000000000003','fiction-stranger','google','{}');
+ ('20000000-0000-0000-0000-000000000002','10000000-0000-0000-0000-000000000002','fiction-family','google','{"email":"family@example.test","email_verified":true}'),
+ ('20000000-0000-0000-0000-000000000003','10000000-0000-0000-0000-000000000003','fiction-stranger','google','{"email":"stranger@example.test","email_verified":true}');
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-0000-0000-000000000001',true);
@@ -37,6 +37,20 @@ select throws_ok($$select public.accept_share(repeat('a',64))$$,'P0001','Share u
 select throws_ok($$select public.review_document('30000000-0000-0000-0000-000000000001',null,null,'[]')$$,'P0001','Record unavailable','Other user cannot review owner record');
 
 select set_config('request.jwt.claim.sub','10000000-0000-0000-0000-000000000002',true);
+reset role;
+update auth.identities set identity_data='{"email":"other@example.test","email_verified":true}'
+  where provider_id='fiction-family';
+set local role authenticated;
+select throws_ok($$select public.accept_share(repeat('a',64))$$,'P0001','Sign in with the invited Google account','Linked Google email must match the invited primary email');
+reset role;
+update auth.identities set identity_data='{"email":"family@example.test","email_verified":false}'
+  where provider_id='fiction-family';
+set local role authenticated;
+select throws_ok($$select public.accept_share(repeat('a',64))$$,'P0001','Sign in with the invited Google account','Google must verify the invited email');
+reset role;
+update auth.identities set identity_data='{"email":"family@example.test","email_verified":true}'
+  where provider_id='fiction-family';
+set local role authenticated;
 select lives_ok($$select public.accept_share(repeat('a',64))$$,'Invited Google identity accepts');
 select lives_ok($$select public.accept_share(repeat('a',64))$$,'Same identity can accept idempotently');
 reset role;

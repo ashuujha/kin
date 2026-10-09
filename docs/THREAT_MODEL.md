@@ -3,7 +3,7 @@
 | Threat | Control | Remaining limit |
 |---|---|---|
 | User changes a document ID | Database RLS; user JWT storage download; backend gets owned row | Provider admin/service key is privileged and must remain server-side |
-| Forwarded medical link | Google identity + invited email, recipient ID binding | Compromised recipient account can view its grants |
+| Forwarded medical link | Google identity must verify the invited primary email; recipient ID binding | Compromised recipient account can view its grants |
 | Guessed QR/token | Random 256-bit tokens, SHA-256 at rest | Anyone who copies public contact QR can see contacts |
 | Stale JWT after revocation | DB checks grant expiry/revocation on every read | Copies already made cannot be recalled |
 | Browser persists health details | No records in browser storage, no-store headers, clear on background/failed checks | Screenshots and browser extensions remain outside control |
@@ -26,3 +26,9 @@ and medicines; partial failure is retryable. There is no account-erasure UI yet.
 
 Security checks are automated in `supabase/tests/database` and backend/web/mobile
 tests. Passing them is not a penetration-test certification or legal compliance.
+
+The recipient check uses server-managed `auth.identities` data. An unrelated linked
+Google email or an unverified provider email is rejected even when the account's
+primary email is confirmed. Supabase's [Google provider implementation](https://github.com/supabase/auth/blob/master/internal/api/provider/google.go)
+returns the provider email and its verification status. Tests use synthetic rows;
+the real OAuth callback still needs a configured provider and a live walkthrough.

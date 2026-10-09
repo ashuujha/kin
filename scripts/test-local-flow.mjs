@@ -29,8 +29,9 @@ try{
   // Only the isolated local database gets synthetic Google identity rows.
   for(const account of [recipient,stranger]){
     assert.match(account.id,/^[0-9a-f-]{36}$/);
+    assert.match(account.email,/^[a-z0-9-]+@example\.test$/);
     execFileSync('docker',['exec','supabase_db_kin','psql','-U','postgres','-c',
-      `insert into auth.identities(id,user_id,provider_id,provider,identity_data) values ('${randomUUID()}','${account.id}','${account.id}','google','{}')`],{stdio:'ignore'});
+      `insert into auth.identities(id,user_id,provider_id,provider,identity_data) values ('${randomUUID()}','${account.id}','${account.id}','google','{"email":"${account.email}","email_verified":true}')`],{stdio:'ignore'});
   }
   const id=randomUUID();objectPath=`${owner.id}/${id}.png`;
   const image=readFileSync('fixtures/prescriptions/typed-example.png');
