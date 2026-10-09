@@ -18,6 +18,11 @@ on:
         description: 'Enable labelled local password login in this debug APK'
         type: boolean
         default: false
+      build_mode:
+        description: 'Release is smaller and uses the persistent distribution certificate'
+        type: choice
+        options: [release, debug]
+        default: release
 permissions:
   contents: read
 concurrency:
@@ -44,20 +49,41 @@ jobs:
       - run: flutter pub get --enforce-lockfile
       - run: flutter analyze
       - run: flutter test
-      - name: Build installable debug APK
+      - name: Configure persistent release signing
+        if: inputs.build_mode != 'debug'
+        env:
+          KIN_KEYSTORE: ${{ secrets.KIN_ANDROID_KEYSTORE_BASE64 }}
+          KIN_SIGNING_PASSWORD: ${{ secrets.KIN_ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import base64, os
+          from pathlib import Path
+          encoded = os.environ.get('KIN_KEYSTORE', '')
+          password = os.environ.get('KIN_SIGNING_PASSWORD', '')
+          if not encoded or not password or any(c in password for c in '\r\n'):
+              raise SystemExit('Persistent Android signing secrets are missing or invalid.')
+          key = Path('android/kin-signing.p12')
+          key.write_bytes(base64.b64decode(encoded, validate=True))
+          key.chmod(0o600)
+          props = Path('android/key.properties')
+          props.write_text(f'storeFile=kin-signing.p12\nstorePassword={password}\nkeyAlias=kin\nkeyPassword={password}\n')
+          props.chmod(0o600)
+          PY
+      - name: Build installable APK
         env:
           KIN_DB_URL: ${{ inputs.supabase_url || vars.SUPABASE_URL }}
           KIN_PUBLIC_KEY: ${{ inputs.supabase_public_key || vars.SUPABASE_ANON_KEY }}
           KIN_RECEIVER_URL: ${{ inputs.receiver_url || vars.RECIPIENT_URL }}
           KIN_LOCAL_AUTH: ${{ inputs.local_test_login && 'true' || 'false' }}
+          KIN_BUILD_MODE: ${{ inputs.build_mode || 'release' }}
         run: >-
-          flutter build apk --debug --split-per-abi
+          flutter build apk --${KIN_BUILD_MODE} --split-per-abi
           --dart-define=SUPABASE_URL="$KIN_DB_URL"
           --dart-define=SUPABASE_ANON_KEY="$KIN_PUBLIC_KEY"
           --dart-define=RECIPIENT_URL="$KIN_RECEIVER_URL"
           --dart-define=ALLOW_LOCAL_AUTH="$KIN_LOCAL_AUTH"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: kin-android-debug
-          path: apps/mobile/build/app/outputs/flutter-apk/*-debug.apk
+          name: kin-android-${{ inputs.build_mode || 'release' }}
+          path: apps/mobile/build/app/outputs/flutter-apk/*.apk
           retention-days: 7

@@ -19,6 +19,7 @@ supabase/.branches/
 .tools/
 *.jks
 *.keystore
+*.p12
 key.properties
 local.properties
 .DS_Store
