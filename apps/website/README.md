@@ -27,7 +27,7 @@ Open http://127.0.0.1:5180/. This is a static HTML, CSS and JavaScript site with
 
 The screenshots were rendered from Kin’s real AuthScreen and HomeScreen widgets at 430 × 900 logical pixels. Home uses an empty document list, not fabricated patient records. Roboto and the SDK’s Material Icons were loaded for capture. The sign-in screenshot illustrates the interface; it does not demonstrate a successful Google OAuth session.
 
-Downloads point to the versioned public GitHub release. The website clearly labels the debug-signed local-service preview and pending Google/AI setup. Update these claims only after an independently connected build and actual provider walkthrough succeed.
+The primary ARM64 download points to https://kin-downloads.vercel.app/kin-0.1.2-local-arm64.apk, a separate static Vercel project with the identical versioned release APK. GitHub remains an alternative; ARMv7 downloads use GitHub. The mirror has an attachment filename and accepts byte-range requests for interrupted downloads. Keep APK binaries out of the source repository. The website clearly labels the debug-signed local-service preview and pending Google/AI setup. Update these claims only after an independently connected build and actual provider walkthrough succeed.
 
 ## Deploy
 
