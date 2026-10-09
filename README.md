@@ -8,10 +8,10 @@ A reviewed medical summary, shared with permission, opened in any browser.
 [![Android APK](https://github.com/ashuujha/kin/actions/workflows/android-build.yml/badge.svg)](https://github.com/ashuujha/kin/actions/workflows/android-build.yml)
 
 [Browser receiver](https://ashuujha.github.io/kin/) ·
-[Signed Android release](https://github.com/ashuujha/kin/releases/tag/v0.2.0-hosted) ·
+[Signed Android release](https://github.com/ashuujha/kin/releases/tag/v0.2.1-hosted) ·
 [Three manual account steps](docs/MANUAL_SETUP.md)
 
-Kin is a hackathon prototype with a dark Android workspace and side navigation.
+Kin is a hackathon prototype with a light Android workspace and side navigation.
 Keep private prescriptions, laboratory PDFs and Drive/DICOM links together.
 Gemma extracts private draft fields; owner review is required before sharing.
 Private family invitations bind to a Google account for 24 hours. A separate,
@@ -23,7 +23,7 @@ Kin does not diagnose, recommend treatment, predict risks or check interactions.
 
 ## Build status
 
-Signed Android release compilation, CI and browser deployment pass for 0.2.0.
+Signed Android release compilation, CI and browser deployment pass for 0.2.1.
 Hosted checks cover private uploads, actual Gemma prescription/PDF extraction,
 review, anonymous emergency access, cross-user denial, rotation and revocation.
 The app connects to hosted services without the development laptop. Real Google

@@ -1,3 +1,9 @@
+# Theme restoration · 0.2.1
+
+The [signed APK build](https://github.com/ashuujha/kin/actions/runs/37935291723) and [CI](https://github.com/ashuujha/kin/actions/runs/37935291696) passed. The [publishing run](https://github.com/ashuujha/kin/actions/runs/37935981648) published three signed APKs and checksums for [0.2.1](https://github.com/ashuujha/kin/releases/tag/v0.2.1-hosted).
+
+This release restores the previous light visual theme, pale green accents and dark buttons. Changes to application Dart files are limited to theme data and colors. All laboratory import, linked-file, emergency consent, sharing, authentication and side-navigation behavior from 0.2.0 remains in place. Flutter analysis is clean and all ten existing regression tests pass. Actual sign-in/home renders passed 320px and 390px checks and replace website screenshots.
+
 # Expanded workspace · 0.2.0 hosted release
 
 Flutter analysis and ten tests passed, including direct-link validation, private-network rejection, side navigation and emergency consent. The drawer and emergency-consent tests cover a 320px-wide phone and a disabled publish action until owner consent. The dark sign-in/home screens were rendered and checked at 320px and 390px; actual images replace the previous screenshots. [Signed Android compilation](https://github.com/ashuujha/kin/actions/runs/37932629510), [CI](https://github.com/ashuujha/kin/actions/runs/37932629526) and [receiver deployment](https://github.com/ashuujha/kin/actions/runs/37932629524) passed. The physical-device Google walkthrough remains pending.
