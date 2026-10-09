@@ -1,6 +1,10 @@
-# Expanded workspace · 0.2.0 candidate
+# Expanded workspace · 0.2.0 hosted release
 
-Flutter analysis and ten tests passed, including direct-link validation, private-network rejection, side navigation and emergency consent. The drawer and emergency-consent tests cover a 320px-wide phone and a disabled publish action until owner consent. The dark sign-in/home screens were rendered and checked at 320px and 390px; actual images replace the previous screenshots. Signed Android compilation and the physical-device Google walkthrough are pending.
+Flutter analysis and ten tests passed, including direct-link validation, private-network rejection, side navigation and emergency consent. The drawer and emergency-consent tests cover a 320px-wide phone and a disabled publish action until owner consent. The dark sign-in/home screens were rendered and checked at 320px and 390px; actual images replace the previous screenshots. [Signed Android compilation](https://github.com/ashuujha/kin/actions/runs/37932629510), [CI](https://github.com/ashuujha/kin/actions/runs/37932629526) and [receiver deployment](https://github.com/ashuujha/kin/actions/runs/37932629524) passed. The physical-device Google walkthrough remains pending.
+
+The [public signed release](https://github.com/ashuujha/kin/releases/tag/v0.2.0-hosted) was published directly from the successful build. Its full public ARM64 download is 19,522,672 bytes and matches the published SHA-256. Archive CRCs, ARM64 libraries, hosted configuration and persistent signing certificate were verified; signed 0.1.3/0.1.4 builds can update. ARMv7 is 17,013,308 bytes.
+
+The deployed emergency browser passed anonymous medical rendering, literal escaping, URL-fragment removal, mobile overflow and revocation clearing. All temporary fictional users were removed. The website passed desktop, 390px and 320px checks for screenshots, downloads, FAQ, documentation, overflow and reduced-motion preference.
 
 Hosted database checks passed: all 29 existing authorization assertions plus 16 new linked-file, laboratory and opt-in emergency assertions. Tests ran in rolled-back fictional-fixture transactions. The migration and extraction/emergency endpoints are deployed.
 

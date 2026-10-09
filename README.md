@@ -8,32 +8,31 @@ A reviewed medical summary, shared with permission, opened in any browser.
 [![Android APK](https://github.com/ashuujha/kin/actions/workflows/android-build.yml/badge.svg)](https://github.com/ashuujha/kin/actions/workflows/android-build.yml)
 
 [Browser receiver](https://ashuujha.github.io/kin/) ·
-[Updated local Android demo](https://github.com/ashuujha/kin/releases/tag/v0.1.2-local-preview) ·
+[Signed Android release](https://github.com/ashuujha/kin/releases/tag/v0.2.0-hosted) ·
 [Three manual account steps](docs/MANUAL_SETUP.md)
 
-Kin is a hackathon prototype. The Flutter Android owner app stores private
-prescription images, extracts draft fields with Gemma and requires owner review.
-Owners search reviewed medicine/date history and share only selected summaries.
-The recipient uses a standard browser: Google-authenticated, view-only medical
-access for 24 hours, or a separate anonymous contact-only QR.
+Kin is a hackathon prototype with a dark Android workspace and side navigation.
+Keep private prescriptions, laboratory PDFs and Drive/DICOM links together.
+Gemma extracts private draft fields; owner review is required before sharing.
+Private family invitations bind to a Google account for 24 hours. A separate,
+explicitly enabled emergency QR opens selected medical information in a browser
+without login. Anyone holding this QR can read the snapshot; originals remain private.
 
 **Use fictional records only.** Owner review is not clinical verification.
 Kin does not diagnose, recommend treatment, predict risks or check interactions.
 
 ## Build status
 
-The app, browser client, database access controls and model adapter are implemented.
-Flutter, browser/backend and database checks pass, the local HTTP flow passes on
-the laptop and in CI, and an installable Android debug APK compiles. The receiver
-also passes real browser tests through temporary HTTPS. See [verification evidence](docs/VALIDATION.md).
-The physical Android preview installs and local password login works, as reported
-by the owner. The updated app adds consistent navigation, Google account creation
-and sign-in UI, in-app privacy information and clear extraction errors.
-The browser receiver and privacy page are publicly deployed on GitHub Pages.
-Live Google OAuth, a live Gemma image call, hosted backend setup and the complete
-physical Android walkthrough remain pending. Local tests do not count as live
-AI evidence. Consult CI and [docs/DEMO.md](docs/DEMO.md) before presenting a feature
-as demonstrated.
+Signed Android release compilation, CI and browser deployment pass for 0.2.0.
+Hosted checks cover private uploads, actual Gemma prescription/PDF extraction,
+review, anonymous emergency access, cross-user denial, rotation and revocation.
+The app connects to hosted services without the development laptop. Real Google
+login return on a physical phone and the two-account walkthrough remain pending.
+See [verification evidence](docs/VALIDATION.md).
+
+Direct public HTTPS report-file links can be imported. Authenticated laboratory
+portals require the owner to download the report first; Kin does not bypass login.
+Drive/DICOM integration stores private links, without decoding or copying the files.
 
 ## Repository
 
@@ -110,19 +109,19 @@ GitHub Pages already hosts the receiver, so Render is an optional alternative.
    allow exactly `dev.ashuujha.kin://auth/callback` and the receiver's HTTPS
    `/auth/callback`. Do not use wildcard production redirect URLs.
 3. Configure Edge Function secrets using `supabase/.env.example`, then deploy
-   `extract-prescription` and `emergency-contact`. Keep model/service keys server-side.
+   `extract-prescription`, `extract-lab`, `emergency-medical` and `emergency-contact`. Keep model/service keys server-side.
 4. Create the Render static site from `render.yaml`, set the two public frontend
    variables, and set `ALLOWED_ORIGINS` to its exact HTTPS origin on the backend.
 5. Set public GitHub repository variables `SUPABASE_URL`, `SUPABASE_ANON_KEY` and
    `RECIPIENT_URL`, then run Android APK. Optional workflow inputs override these
    public values. With no configuration the APK displays a truthful setup screen.
    The workflow creates separate APKs for each CPU architecture. Keep
-   `local_test_login=false` for Google builds. APKs are debug-signed hackathon builds.
+   `local_test_login=false` for Google builds. Public hosted APKs use the persistent release signing key.
 6. Perform the two-account live walkthrough in [docs/DEMO.md](docs/DEMO.md).
 
 DigitalOcean Gemma model ID: `gemma-4-31B-it`, OpenAI-compatible image messages.
 This adapter must pass a real fictional-image smoke test on the account before
-claiming live support. Optional Google-hosted Gemma uses `gemma-4-31b-it` and is
+claiming live support. Optional Google-hosted Gemma uses `gemma-4-26b-a4b-it` and is
 restricted to fictional demonstrations under the provider's terms. No model is
 fine-tuned by this project. There is no separate OCR or vector database.
 
