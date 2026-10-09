@@ -6,6 +6,7 @@ Use fictional medical records for development and demos. Never commit credential
 ## Structure
 - `apps/mobile`: Flutter Android owner app.
 - `apps/recipient-web`: TypeScript browser receiver; no installation required.
+- `apps/website`: static public overview, APK downloads and documentation directory.
 - `supabase`: PostgreSQL migrations, RLS, Edge Functions and authorization tests.
 - `fixtures`: visibly fictional prescriptions; `docs`: scope, security and demo guidance.
 

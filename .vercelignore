@@ -1,0 +1,13 @@
+.git/
+.env*
+node_modules/
+apps/mobile/
+apps/recipient-web/
+supabase/
+fixtures/
+docs/
+scripts/
+graphify-out/
+test-results/
+*.local.json
+apps/website/.vercel/

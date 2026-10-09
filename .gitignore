@@ -27,3 +27,5 @@ local.properties
 graphify-out/.*
 graphify-out/cache/
 graphify-out/manifest.json
+
+.vercel/

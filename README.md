@@ -1,5 +1,7 @@
 # Kin
 
+Project website: [kin-care-ten.vercel.app](https://kin-care-ten.vercel.app/) · [Documentation directory](https://kin-care-ten.vercel.app/docs/)
+
 A reviewed medical summary, shared with permission, opened in any browser.
 
 [![CI](https://github.com/ashuujha/kin/actions/workflows/ci.yml/badge.svg)](https://github.com/ashuujha/kin/actions/workflows/ci.yml)
