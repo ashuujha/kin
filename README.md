@@ -34,6 +34,29 @@ Direct public HTTPS report-file links can be imported. Authenticated laboratory
 portals require the owner to download the report first; Kin does not bypass login.
 Drive/DICOM integration stores private links, without decoding or copying the files.
 
+## Contribute to Kin
+
+[Kin’s GitHub repository](https://github.com/ashuujha/kin) is currently public.
+Developers and other contributors are welcome to suggest improvements, report
+bugs, improve documentation and submit code. We maintain the app’s standards
+through maintainer review, automated checks and controlled changes to the main
+branch. Private medical records and service credentials are never contributions.
+
+To contribute:
+
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md) and the project’s privacy boundaries.
+2. [Open an issue](https://github.com/ashuujha/kin/issues) to discuss an improvement,
+   or fork the repository and make changes on a separate branch.
+3. Submit a pull request describing the change and relevant verification.
+4. GitHub automatically runs the configured CI checks on pull requests. Address
+   feedback and check failures before a maintainer merges the contribution.
+
+Merged contributions automatically become part of the GitHub main branch.
+Existing workflows rebuild and deploy the browser receiver when its relevant
+files change, and build Android APKs when mobile files change. Public APK releases
+and the Vercel website still require their publishing/deployment steps.
+Contributions are not automatically merged or released without review.
+
 ## Repository
 
 ```text
