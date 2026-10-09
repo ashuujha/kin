@@ -36,6 +36,9 @@ jobs:
       - run: npx supabase start -x studio,logflare,vector,imgproxy,realtime,postgres-meta
       - run: npx supabase test db
       - run: npm run test:integration
+        env:
+          KIN_TEST_AI_UNCONFIGURED: '1'
+          KIN_INTEGRATION_START_FUNCTIONS: '1'
       - run: npx supabase stop
         if: always()
   mobile:

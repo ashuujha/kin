@@ -17,10 +17,11 @@ Kin does not diagnose, recommend treatment, predict risks or check interactions.
 ## Build status
 
 The app, browser client, database access controls and model adapter are implemented.
-Flutter, browser/backend and database checks pass, the local HTTP flow passes in
-CI, and an installable Android debug APK compiles. See [verification evidence](docs/VALIDATION.md).
-Live Google OAuth, a live Gemma image call, public HTTPS hosting and a physical
-Android walkthrough need account configuration. Local tests do not count as live
+Flutter, browser/backend and database checks pass, the local HTTP flow passes on
+the laptop and in CI, and an installable Android debug APK compiles. The receiver
+also passes real browser tests through temporary HTTPS. See [verification evidence](docs/VALIDATION.md).
+Live Google OAuth, a live Gemma image call, permanent hosting and a physical
+Android walkthrough remain pending. Local tests do not count as live
 AI evidence. Consult CI and [docs/DEMO.md](docs/DEMO.md) before presenting a feature
 as demonstrated.
 
@@ -41,7 +42,7 @@ supabase/
   functions/             Authenticated Gemma extraction; anonymous contact projection
   tests/database/        Cross-user, forwarded-link, expiry and revocation checks
 fixtures/                Visibly fictional test prescription and expected fields
-scripts/                 Real local API integration test (refuses remote projects)
+scripts/                 Local setup, receiver proxy and real API/browser tests
 docs/                    Scope, architecture, API, privacy, threat model, pitch and rules
 graphify-out/            Interactive architecture graph, data and audit report
 .github/workflows/       CI and installable debug APK build
@@ -51,6 +52,8 @@ graphify-out/            Interactive architecture graph, data and audit report
 
 Requirements: Node 22+, Docker, Flutter **3.47.7**. Java/Android SDK are needed for
 local APK builds; GitHub Actions can build the APK without local Android tooling.
+For the configured fictional phone demo and temporary HTTPS receiver, follow
+[the local walkthrough](docs/LOCAL_DEMO.md).
 
 ```sh
 npm ci
@@ -90,8 +93,10 @@ they are not a secure public sharing deployment. Google PKCE needs OAuth setup.
 4. Create the Render static site from `render.yaml`, set the two public frontend
    variables, and set `ALLOWED_ORIGINS` to its exact HTTPS origin on the backend.
 5. Set public GitHub repository variables `SUPABASE_URL`, `SUPABASE_ANON_KEY` and
-   `RECIPIENT_URL`, then run Android APK. With no variables the APK displays a
-   truthful setup screen. APKs are debug-signed hackathon builds, not store releases.
+   `RECIPIENT_URL`, then run Android APK. Optional workflow inputs override these
+   public values. With no configuration the APK displays a truthful setup screen.
+   The workflow creates separate APKs for each CPU architecture. Keep
+   `local_test_login=false` for Google builds. APKs are debug-signed hackathon builds.
 6. Perform the two-account live walkthrough in [docs/DEMO.md](docs/DEMO.md).
 
 DigitalOcean Gemma model ID: `gemma-4-31B-it`, OpenAI-compatible image messages.

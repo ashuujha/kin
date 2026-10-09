@@ -120,8 +120,10 @@ class _AuthScreenState extends State<AuthScreen> {
           if (widget.configured)
             BusyButton(
               busy: busy,
-              label: 'Continue with Google',
-              onPressed: login,
+              label: AppConfig.localAuth
+                  ? 'Sign in to local test build'
+                  : 'Continue with Google',
+              onPressed: AppConfig.localAuth ? localLogin : login,
             )
           else
             const KinCard(
@@ -131,9 +133,11 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
           if (widget.configured && AppConfig.localAuth)
-            TextButton(
-              onPressed: localLogin,
-              child: const Text('Local testing · password account'),
+            const KinCard(
+              title: 'Local testing · fictional account',
+              child: Text(
+                'Use the test account created on your laptop. Password login does not demonstrate Google OAuth.',
+              ),
             ),
           const SizedBox(height: 24),
           const Text(

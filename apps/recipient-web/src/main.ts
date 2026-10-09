@@ -10,7 +10,8 @@ header.append(brand,element('span','Shared with care','header-caption'));
 const main = element('main'); main.id='main';
 const footer = element('footer','Your information. Your permission.');
 root.append(header,main,footer);
-const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const url = import.meta.env.VITE_SUPABASE_PROXY === 'true'
+  ? `${location.origin}/backend` : import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 const client = url && key ? createClient(url,key,{auth:{flowType:'pkce',storage:sessionStorage,persistSession:true,detectSessionInUrl:true}}) : null;
 const captured = captureLink(window.location);
@@ -49,6 +50,11 @@ async function loadSummary() {
   const {data:sessionData} = await withDeadline(client.auth.getSession());
   if (current!==generation) return;
   if (!sessionData.session) {
+    if (import.meta.env.VITE_GOOGLE_ENABLED === 'false') {
+      message('Google sharing is not connected',
+        'This local build can show contact cards. Private medical invitations need the invited Google account; Google sign-in has not been configured yet.');
+      return;
+    }
     clearDisplay(); heading('INVITATION / 24-HOUR ACCESS','A little context. Better care.',
       'Sign in with the Google account the owner invited. You can read only the information they chose to share.');
     const info=card('Private by permission');

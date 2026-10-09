@@ -9,6 +9,8 @@ insert into auth.users(id,email,email_confirmed_at) values
 insert into auth.identities(id,user_id,provider_id,provider,identity_data) values
  ('20000000-0000-0000-0000-000000000002','10000000-0000-0000-0000-000000000002','fiction-family','google','{"email":"family@example.test","email_verified":true}'),
  ('20000000-0000-0000-0000-000000000003','10000000-0000-0000-0000-000000000003','fiction-stranger','google','{"email":"stranger@example.test","email_verified":true}');
+update auth.identities set created_at=now(),updated_at=now(),last_sign_in_at=now()
+  where provider_id in ('fiction-family','fiction-stranger');
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub','10000000-0000-0000-0000-000000000001',true);

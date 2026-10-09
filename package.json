@@ -11,10 +11,14 @@
     "check:backend": "deno check --config=supabase/functions/deno.json --lock=supabase/functions/deno.lock supabase/functions/*/index.ts",
     "test:backend": "deno test --config=supabase/functions/deno.json --lock=supabase/functions/deno.lock supabase/functions/tests",
     "db:test": "supabase test db",
-    "test:integration": "node scripts/test-local-flow.mjs"
+    "test:integration": "node scripts/test-local-flow.mjs",
+    "test:receiver:live": "node scripts/test-receiver-live.mjs",
+    "local:configure": "node scripts/configure-local.mjs",
+    "local:receiver": "node scripts/serve-local-receiver.mjs"
   },
   "devDependencies": {
     "deno": "2.9.6",
+    "playwright-core": "1.62.1",
     "supabase": "2.120.0"
   }
 }

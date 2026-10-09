@@ -1,7 +1,7 @@
 // Integration test against real local Supabase HTTP endpoints, never a remote project.
 // Google identity rows are synthetic permission fixtures, not an OAuth demonstration.
 import assert from 'node:assert/strict';
-import {execFileSync} from 'node:child_process';
+import {execFileSync,spawn} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import {createClient} from '@supabase/supabase-js';
@@ -12,10 +12,19 @@ assert(['127.0.0.1','localhost'].includes(new URL(url).hostname),'Integration te
 const options={auth:{persistSession:false,autoRefreshToken:false}};
 const admin=createClient(url,config.SERVICE_ROLE_KEY,options);
 const anon=createClient(url,config.ANON_KEY,options);
-const clients=[];const userIds=[];let objectPath;
+const clients=[];const userIds=[];let objectPath;let functionRuntime;
 function checked(result,label){assert.equal(result.error,null,label);return result.data;}
 const tokenHash=(value)=>createHash('sha256').update(value).digest('hex');
 try{
+  if(process.env.KIN_INTEGRATION_START_FUNCTIONS==='1'){
+    functionRuntime=spawn('./node_modules/.bin/supabase',['functions','serve'],{stdio:['ignore','pipe','pipe']});
+    await new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>reject(new Error('Local function runtime did not become ready')),60000);
+      const ready=chunk=>{if(chunk.toString().includes('Serving functions on')){clearTimeout(timer);resolve();}};
+      functionRuntime.stdout.on('data',ready);functionRuntime.stderr.on('data',ready);
+      functionRuntime.once('exit',()=>{clearTimeout(timer);reject(new Error('Local function runtime exited during startup'));});
+    });
+  }
   for(const label of ['owner','recipient','stranger']){
     const email=`kin-test-${label}-${randomUUID()}@example.test`;
     const password=randomBytes(24).toString('base64url');
@@ -31,7 +40,8 @@ try{
     assert.match(account.id,/^[0-9a-f-]{36}$/);
     assert.match(account.email,/^[a-z0-9-]+@example\.test$/);
     execFileSync('docker',['exec','supabase_db_kin','psql','-U','postgres','-c',
-      `insert into auth.identities(id,user_id,provider_id,provider,identity_data) values ('${randomUUID()}','${account.id}','${account.id}','google','{"email":"${account.email}","email_verified":true}')`],{stdio:'ignore'});
+      `insert into auth.identities(id,user_id,provider_id,provider,identity_data,created_at,updated_at,last_sign_in_at) values ('${randomUUID()}','${account.id}','${account.id}','google','{"email":"${account.email}","email_verified":true,"sub":"${account.id}"}',now(),now(),now())`],{stdio:'ignore'});
+    checked(await account.client.auth.getUser(),'Synthetic identity remains readable by the real Auth API');
   }
   const id=randomUUID();objectPath=`${owner.id}/${id}.png`;
   const image=readFileSync('fixtures/prescriptions/typed-example.png');
@@ -41,6 +51,21 @@ try{
   assert((await recipient.client.storage.from('prescriptions').download(objectPath)).error,'Other user cannot download private image');
   assert((await stranger.client.storage.from('prescriptions').upload(`${owner.id}/${randomUUID()}.png`,image,{contentType:'image/png'})).error,'Forged upload prefix denied');
   assert((await anon.from('documents').select()).error,'Anonymous original access denied');
+  const edgeHeaders={apikey:config.ANON_KEY,'Content-Type':'application/json'};
+  const edge=async(name,body,token)=>fetch(`${url}/functions/v1/${name}`,{
+    method:'POST',headers:{...edgeHeaders,...(token?{Authorization:`Bearer ${token}`}:{})},
+    body:JSON.stringify(body),signal:AbortSignal.timeout(30000),
+  });
+  const ownerJwt=(await owner.client.auth.getSession()).data.session.access_token;
+  const strangerJwt=(await stranger.client.auth.getSession()).data.session.access_token;
+  assert.equal((await edge('extract-prescription',{document_id:id})).status,401,'Extraction requires an owner session');
+  assert.equal((await edge('extract-prescription',{document_id:id},strangerJwt)).status,404,'Extraction checks document ownership');
+  if(process.env.KIN_TEST_AI_UNCONFIGURED==='1'){
+    const unavailable=await edge('extract-prescription',{document_id:id},ownerJwt);
+    assert.equal(unavailable.status,503,'Absent AI key is an honest service error');
+    assert.equal((await unavailable.json()).error,'AI is not configured. You can enter fields manually.');
+    assert.equal((await owner.client.from('documents').select('status').eq('id',id).single()).data.status,'failed');
+  }
   checked(await owner.client.rpc('review_document',{p_document_id:id,p_date:'2026-09-03',p_clinic:'FICTIONAL Clinic',p_medications:[{
     name:'Paracetamol',dosage:'500 mg',frequency:null,duration:'4 weeks',source_excerpt:'FICTIONAL software test',taking_status:'unknown',
   }]}),'Manual owner review');
@@ -73,12 +98,19 @@ try{
   const contacts=checked(await admin.rpc('resolve_contact',{p_token_hash:tokenHash(contactToken)}),'Server-only contact projection');
   assert.deepEqual(Object.keys(contacts.contacts[0]).sort(),['name','phone','relationship']);
   assert((await anon.rpc('resolve_contact',{p_token_hash:tokenHash(contactToken)})).error,'Anonymous direct RPC bypass denied');
+  const contactResponse=await edge('emergency-contact',{token:contactToken});
+  assert.equal(contactResponse.status,200,'Anonymous contact Edge Function works over real HTTP');
+  const projection=await contactResponse.json();
+  assert.deepEqual(Object.keys(projection.contacts[0]).sort(),['name','phone','relationship']);
+  checked(await owner.client.rpc('save_contacts',{p_name:'FICTIONAL Owner',p_entries:[],p_token_hash:null}),'Revoke public contacts');
+  assert.equal((await edge('emergency-contact',{token:contactToken})).status,404,'Old public contact token is rejected after revocation');
   checked(await owner.client.storage.from('prescriptions').remove([objectPath]),'Private original deletion');
   checked(await owner.client.rpc('delete_document',{p_document_id:id}),'Metadata deletion');
   assert.equal(checked(await owner.client.rpc('search_prescriptions'),'History after deletion').matches.length,0);
-  console.log('Local HTTP integration passed: upload, review, lookup, recipient binding, snapshot, expiry, revocation, contacts and deletion.');
+  console.log('Local HTTP integration passed: upload, review, lookup, recipient binding, snapshot, expiry, revocation, public Edge Functions, contacts and deletion.');
   console.log('Identity fixtures simulate Google eligibility. External Google OAuth and live Gemma remain untested.');
 }finally{
   if(objectPath && clients[0])await clients[0].client.storage.from('prescriptions').remove([objectPath]);
   for(const id of userIds)await admin.auth.admin.deleteUser(id);
+  functionRuntime?.kill('SIGINT');
 }

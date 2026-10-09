@@ -4,6 +4,20 @@ on:
     branches: [main]
     paths: ['apps/mobile/**', '.github/workflows/android-build.yml']
   workflow_dispatch:
+    inputs:
+      supabase_url:
+        description: 'Optional public API URL (local debug testing may use a LAN URL)'
+        type: string
+      supabase_public_key:
+        description: 'Public anon/publishable key only; never a service key'
+        type: string
+      receiver_url:
+        description: 'Optional receiver URL'
+        type: string
+      local_test_login:
+        description: 'Enable labelled local password login in this debug APK'
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -32,16 +46,18 @@ jobs:
       - run: flutter test
       - name: Build installable debug APK
         env:
-          KIN_DB_URL: ${{ vars.SUPABASE_URL }}
-          KIN_PUBLIC_KEY: ${{ vars.SUPABASE_ANON_KEY }}
-          KIN_RECEIVER_URL: ${{ vars.RECIPIENT_URL }}
+          KIN_DB_URL: ${{ inputs.supabase_url || vars.SUPABASE_URL }}
+          KIN_PUBLIC_KEY: ${{ inputs.supabase_public_key || vars.SUPABASE_ANON_KEY }}
+          KIN_RECEIVER_URL: ${{ inputs.receiver_url || vars.RECIPIENT_URL }}
+          KIN_LOCAL_AUTH: ${{ inputs.local_test_login && 'true' || 'false' }}
         run: >-
-          flutter build apk --debug
+          flutter build apk --debug --split-per-abi
           --dart-define=SUPABASE_URL="$KIN_DB_URL"
           --dart-define=SUPABASE_ANON_KEY="$KIN_PUBLIC_KEY"
           --dart-define=RECIPIENT_URL="$KIN_RECEIVER_URL"
+          --dart-define=ALLOW_LOCAL_AUTH="$KIN_LOCAL_AUTH"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: kin-android-debug
-          path: apps/mobile/build/app/outputs/flutter-apk/app-debug.apk
+          path: apps/mobile/build/app/outputs/flutter-apk/*-debug.apk
           retention-days: 7
