@@ -5,7 +5,6 @@ apps/mobile/
 apps/recipient-web/
 supabase/
 fixtures/
-docs/
 scripts/
 graphify-out/
 test-results/

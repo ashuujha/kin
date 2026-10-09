@@ -33,7 +33,7 @@ Downloads point to the versioned public GitHub release. The website clearly labe
 
 Vercel project: `kin-care` in the `ashuujha` team. The connected GitHub repository uses `apps/website` as its Root Directory, no framework, empty install/build commands and `.` as the output directory. The directory’s `vercel.json` carries the static settings and response headers. Vercel links are local ignored files.
 
-Run from the linked repository root (the root `.vercelignore` uploads only website files):
+Run from the linked repository root (the root `.vercelignore` excludes credentials, backend files and mobile builds):
 
 ```sh
 npx vercel --prod
