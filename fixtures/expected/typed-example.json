@@ -1,0 +1,11 @@
+{
+  "prescription_date": "2026-09-03",
+  "clinic": "Example Clinic · software test",
+  "medications": [{
+    "name": "Paracetamol",
+    "dosage": "500 mg",
+    "frequency": "as written in this fictional example",
+    "duration": "4 weeks",
+    "source_excerpt": "Paracetamol Dosage: 500 mg"
+  }]
+}

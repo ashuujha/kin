@@ -1,0 +1,2 @@
+-- Intentionally empty. No real or hard-coded user records are seeded.
+-- Fictional fixtures are uploaded explicitly during development.

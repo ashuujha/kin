@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1100" viewBox="0 0 1000 1100">
+ <rect width="1000" height="1100" fill="white"/>
+ <g font-family="sans-serif" fill="#163b32">
+  <text x="65" y="85" font-size="28" font-weight="bold">FICTIONAL · NOT FOR CLINICAL USE</text>
+  <text x="65" y="180" font-size="38">Example Clinic · software test</text>
+  <text x="65" y="270" font-size="26">Patient: Fictional Demo Person</text>
+  <text x="65" y="325" font-size="26">Prescription date: 2026-09-03</text>
+  <text x="65" y="450" font-size="28">Paracetamol</text>
+  <text x="65" y="500" font-size="26">Dosage: 500 mg</text>
+  <text x="65" y="550" font-size="26">Frequency: as written in this fictional example</text>
+  <text x="65" y="600" font-size="26">Duration: 4 weeks</text>
+  <text x="65" y="800" font-size="23">This is synthetic text for OCR and review tests.</text>
+  <text x="65" y="850" font-size="23">It is not a valid prescription or treatment advice.</text>
+ </g>
+</svg>

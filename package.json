@@ -1,0 +1,19 @@
+{
+  "name": "kin-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/recipient-web"
+  ],
+  "scripts": {
+    "test": "npm test -w apps/recipient-web && npm run test:backend",
+    "build": "npm run build -w apps/recipient-web",
+    "check:backend": "deno check --config=supabase/functions/deno.json --lock=supabase/functions/deno.lock supabase/functions/*/index.ts",
+    "test:backend": "deno test --config=supabase/functions/deno.json --lock=supabase/functions/deno.lock supabase/functions/tests",
+    "db:test": "supabase test db"
+  },
+  "devDependencies": {
+    "deno": "2.9.6",
+    "supabase": "2.120.0"
+  }
+}
