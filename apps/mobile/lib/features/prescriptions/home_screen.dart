@@ -113,29 +113,29 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 const SizedBox(height: 12),
                 const Text(
-                  'YOUR CARE, ORGANIZED',
+                  'WELCOME TO YOUR CARE SPACE',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.5,
-                    color: Color(0xff65766b),
+                    color: Color(0xff777780),
                   ),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'A clearer picture\nof your care.',
+                  'Your care, in one place.',
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 const SizedBox(height: 12),
                 const Text(
                   'Keep your records close. Share only what matters.',
-                  style: TextStyle(color: Color(0xff65766b)),
+                  style: TextStyle(color: Color(0xff777780)),
                 ),
                 const SizedBox(height: 22),
                 Container(
                   padding: const EdgeInsets.all(23),
                   decoration: BoxDecoration(
-                    color: const Color(0xff173d33),
+                    color: const Color(0xffc4e59a),
                     borderRadius: BorderRadius.circular(26),
                   ),
                   child: Column(
@@ -148,21 +148,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 18),
                       const Text(
-                        'One prescription.\nOne step closer.',
+                        'Keep a clearer\nrecord of your care.',
                         style: TextStyle(
                           fontSize: 27,
                           fontWeight: FontWeight.w600,
                           height: 1.2,
                           letterSpacing: -.7,
-                          color: Colors.white,
+                          color: Color(0xff151525),
                         ),
                       ),
                       const SizedBox(height: 10),
                       const Text(
-                        'Add an image, review the details, and build your prescription history.',
+                        'Add a prescription and check its details.',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Color(0xffd4e5d3),
+                          color: Color(0xff414e32),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -171,8 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: FilledButton.icon(
                           onPressed: uploading ? null : upload,
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xffe4eedf),
-                            foregroundColor: const Color(0xff173d33),
+                            backgroundColor: const Color(0xff151525),
+                            foregroundColor: Colors.white,
                           ),
                           icon: uploading
                               ? const SizedBox(
@@ -194,17 +194,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 14),
-                KinActionCard(
-                  title: 'Your shared summary',
-                  description: 'Choose the details your family can see.',
-                  icon: Icons.fact_check_outlined,
-                  onTap: () => setState(() => section = 2),
-                ),
-                KinActionCard(
-                  title: 'Emergency contact card',
-                  description: 'A QR that opens in any browser.',
-                  icon: Icons.qr_code_2_rounded,
-                  onTap: () => setState(() => section = 4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 184,
+                        child: KinActionCard(
+                          compact: true,
+                          title: 'Shared summary',
+                          description: 'Choose what your family sees.',
+                          icon: Icons.fact_check_outlined,
+                          onTap: () => setState(() => section = 2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SizedBox(
+                        height: 184,
+                        child: KinActionCard(
+                          compact: true,
+                          title: 'Contact QR',
+                          description: 'Open contacts in any browser.',
+                          icon: Icons.qr_code_2_rounded,
+                          onTap: () => setState(() => section = 4),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 26),
                 Row(
@@ -223,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 8),
                 const Text(
                   'One typed English page · JPEG / PNG · up to 5 MB',
-                  style: TextStyle(fontSize: 12, color: Color(0xff5c7064)),
+                  style: TextStyle(fontSize: 12, color: Color(0xff777780)),
                 ),
                 FutureBuilder<List<RecordMap>>(
                   future: records,
@@ -262,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: 42,
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xffe8eee6),
+                                    color: const Color(0xfff3f3f0),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Icon(Icons.description_outlined),
@@ -303,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 24),
                 const Text(
                   'Your records provide context. They do not recommend treatment.',
-                  style: TextStyle(fontSize: 12, color: Color(0xff5c7064)),
+                  style: TextStyle(fontSize: 12, color: Color(0xff777780)),
                 ),
               ],
             ),
@@ -322,8 +339,8 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       destinations: const [
         NavigationDestination(
-          icon: Icon(Icons.grid_view_outlined),
-          selectedIcon: Icon(Icons.grid_view_rounded),
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home_rounded),
           label: 'Home',
         ),
         NavigationDestination(

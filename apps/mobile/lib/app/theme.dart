@@ -2,72 +2,77 @@ import 'package:flutter/material.dart';
 
 ThemeData kinTheme() => ThemeData(
   useMaterial3: true,
+  fontFamily: 'Roboto',
   colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color(0xff173d33),
-    primary: const Color(0xff173d33),
-    surface: const Color(0xfff7f8f4),
-    secondary: const Color(0xffa46c36),
+    seedColor: const Color(0xff151525),
+    primary: const Color(0xff151525),
+    surface: const Color(0xffffffff),
+    secondary: const Color(0xff91b75f),
   ),
-  scaffoldBackgroundColor: const Color(0xfff7f8f4),
+  scaffoldBackgroundColor: Colors.white,
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color(0xfff7f8f4),
+    backgroundColor: Color(0xffffffff),
     surfaceTintColor: Colors.transparent,
     centerTitle: false,
+    elevation: 0,
+    scrolledUnderElevation: 0,
     titleTextStyle: TextStyle(
-      color: Color(0xff173d33),
-      fontSize: 22,
+      fontFamily: 'Roboto',
+      color: Color(0xff151525),
+      fontSize: 20,
       fontWeight: FontWeight.w600,
     ),
   ),
   navigationBarTheme: NavigationBarThemeData(
     backgroundColor: Colors.white,
-    indicatorColor: const Color(0xffe1ebe2),
-    height: 76,
+    indicatorColor: const Color(0xffc4e59a),
+    height: 72,
     labelTextStyle: WidgetStateProperty.all(
       const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
     ),
   ),
   bottomSheetTheme: const BottomSheetThemeData(
-    backgroundColor: Color(0xfff7f8f4),
+    backgroundColor: Color(0xffffffff),
     showDragHandle: true,
   ),
   cardTheme: CardThemeData(
-    color: Colors.white,
+    color: const Color(0xfff5f5f2),
+    surfaceTintColor: Colors.transparent,
     elevation: 0,
     margin: const EdgeInsets.symmetric(vertical: 8),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),
-      side: const BorderSide(color: Color(0xffdfe5dc)),
+      side: BorderSide.none,
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: Colors.white,
+    fillColor: const Color(0xfff5f5f2),
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(color: Color(0xffdfe5dc)),
+      borderSide: const BorderSide(color: Color(0xffeaeae7)),
     ),
     contentPadding: const EdgeInsets.all(16),
   ),
   filledButtonTheme: FilledButtonThemeData(
     style: FilledButton.styleFrom(
       minimumSize: const Size(0, 54),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
     ),
   ),
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       minimumSize: const Size(0, 50),
-      side: const BorderSide(color: Color(0xffd3dfd6)),
+      side: const BorderSide(color: Color(0xffe4e4e0)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     ),
   ),
   textTheme: const TextTheme(
     headlineLarge: TextStyle(
-      fontSize: 38,
-      fontWeight: FontWeight.w600,
-      letterSpacing: -1.5,
+      fontSize: 32,
+      fontWeight: FontWeight.w700,
+      letterSpacing: -1.2,
     ),
     titleMedium: TextStyle(
       fontSize: 19,

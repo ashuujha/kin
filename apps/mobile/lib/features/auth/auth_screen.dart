@@ -118,7 +118,7 @@ class _AuthScreenState extends State<AuthScreen> {
             SizedBox(height: 20),
             Text(
               'Use fictional records for the hackathon. Server and AI processing are not end-to-end encrypted.',
-              style: TextStyle(fontSize: 12, color: Color(0xff65766b)),
+              style: TextStyle(fontSize: 12, color: Color(0xff777780)),
             ),
           ],
         ),
@@ -145,82 +145,22 @@ class _AuthScreenState extends State<AuthScreen> {
                   KinBadge('PRIVATE BY CHOICE', icon: Icons.lock_outline),
                 ],
               ),
-              const SizedBox(height: 44),
+              const SizedBox(height: 30),
+              const CareArtwork(),
+              const SizedBox(height: 26),
               Text(
-                'Care begins\nwith context.',
+                'Care, kept simple.',
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               const Text(
-                'Your records in one place. The right information, shared with the people you choose.',
+                'Keep your prescriptions together. Review the details. Share with the people you choose.',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 16,
-                  height: 1.6,
-                  color: Color(0xff65766b),
-                ),
-              ),
-              const SizedBox(height: 26),
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: const Color(0xff173d33),
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        KinBadge(
-                          'YOUR CARE RECORD',
-                          dark: true,
-                          icon: Icons.favorite_outline,
-                        ),
-                        Icon(
-                          Icons.shield_outlined,
-                          color: Color(0xffd4e5d3),
-                          size: 26,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 28),
-                    Text(
-                      'Keep the original.\nShare the essentials.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        height: 1.2,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -.6,
-                      ),
-                    ),
-                    SizedBox(height: 22),
-                    Divider(color: Color(0xff466456)),
-                    SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.description_outlined,
-                          color: Color(0xffd4e5d3),
-                          size: 19,
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'Prescriptions · Reviewed summaries · Contacts',
-                            style: TextStyle(
-                              color: Color(0xffd4e5d3),
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  fontSize: 15,
+                  height: 1.55,
+                  color: Color(0xff777780),
                 ),
               ),
               const SizedBox(height: 26),
@@ -270,7 +210,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 const Text(
                   'New here? Your first sign-in creates your account.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Color(0xff65766b)),
+                  style: TextStyle(fontSize: 12, color: Color(0xff777780)),
                 ),
               ],
               if (widget.configured && AppConfig.localAuth)
@@ -288,7 +228,7 @@ class _AuthScreenState extends State<AuthScreen> {
               const Text(
                 'Record information, not medical advice.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 11, color: Color(0xff65766b)),
+                style: TextStyle(fontSize: 11, color: Color(0xff777780)),
               ),
             ],
           ),
