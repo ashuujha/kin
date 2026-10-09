@@ -1,5 +1,24 @@
 # Connect the final hackathon app
 
+## Current Kin deployment
+
+The 0.1.3 signed hosted preview uses Supabase project `wbhjgppzyhqlagjxyzrn`,
+the [browser receiver](https://ashuujha.github.io/kin/) and the
+[download website](https://kin-care-ten.vercel.app/). Migrations, private storage,
+Google provider configuration and server-only Google Gemma extraction are deployed.
+See [the validation record](VALIDATION.md) for tested flows and remaining device checks.
+
+Uninstall the older debug-signed preview, install 0.1.3, and start a fresh
+**Continue with Google** attempt from the app. Do not open the Supabase callback
+URL directly: it requires the state created by a sign-in attempt. If Google is
+in Testing, add the owner, recipient and judge accounts as test users.
+
+Use a fictional typed prescription, check every extracted field, save it, publish
+a selected summary and invite a second Google account. Open that invitation in
+a normal browser. Revoke it and confirm that subsequent reads are denied.
+
+## Setup for a separate deployment
+
 For the shortest assisted setup, follow [the three manual account steps](MANUAL_SETUP.md)
 and use `npm run production:deploy`. The helper completes the commands/configuration
 below and dispatches the hosted receiver and Google-configured Android builds.
@@ -110,13 +129,16 @@ Build with Java/Android SDK available:
 
 ```sh
 cd apps/mobile
-flutter build apk --debug --split-per-abi --dart-define-from-file=config.production.json
+flutter build apk --release --split-per-abi --dart-define-from-file=config.production.json
 ```
 
 Alternatively dispatch the repository's **Android APK** GitHub workflow with
 the three public values and leave **local_test_login=false**. The workflow's
-installable APK is debug-signed for direct hackathon distribution; it is not a
-Play Store release. Do not install an unconfigured artifact expecting live login.
+release mode uses the persistent distribution keystore provided through GitHub
+secrets `KIN_ANDROID_KEYSTORE_BASE64` and `KIN_ANDROID_KEYSTORE_PASSWORD`.
+Local release builds require ignored `android/key.properties` referencing the
+same PKCS12 key. Back up that key privately so later releases can update installed
+apps. Debug builds use a different key. This is not a Play Store release. Do not install an unconfigured artifact expecting live login.
 
 ## Ready means the connections work
 
