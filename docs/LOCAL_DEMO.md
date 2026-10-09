@@ -102,8 +102,10 @@ conflict, remove that preview before installing; this clears its local session.
    in using the fictional account in the laptop's ignored `.env.local`.
 2. Download `fixtures/prescriptions/typed-example.png` from the public repository
    onto the phone. Upload it as an image in Kin. Use no real medical records.
-3. Tap **Extract with Gemma**. This profile has no model key, so extraction should
-   fail and offer manual entry without saving an AI result. Enter the fictional
+3. Tap **Extract with Gemma**. This profile has no model key, so extraction shows
+   **AI is not configured for this build** and offers manual entry. The earlier
+   0.1.1 preview shows a generic extraction failure for the same missing key.
+   Enter the fictional
    prescription fields manually, review them, and save. Search the reviewed
    medicine and the explicit prescription date.
 4. Publish a summary with selected fields. A private medical invitation can be
@@ -112,6 +114,33 @@ conflict, remove that preview before installing; this clears its local session.
 5. Create a separate contact card using clearly fictional contact details. Open
    its link in Chrome without installing a receiver app. Never call the fictional
    number. Revoke the card and confirm its previous link becomes unavailable.
+
+## Enable real AI extraction
+
+The current local configuration has an empty `AI_API_KEY`. Repeated extraction
+attempts cannot fix missing configuration. Manual entry, review and history work
+without AI; do not present manual entries as model output.
+
+Create a DigitalOcean [model access key](https://docs.digitalocean.com/products/inference/how-to/manage-model-access-keys/)
+scoped to Gemma 4, with **No VPC network** for requests from this laptop.
+The [supported model identifier](https://docs.digitalocean.com/products/inference/details/models/)
+is `gemma-4-31B-it`. Confirm the account has inference funding; the hackathon
+credit amount alone does not establish this account's inference balance.
+Set these values in the ignored `supabase/.env.local`, keeping existing allowed
+origins:
+
+```dotenv
+AI_PROVIDER=digitalocean
+AI_MODEL=gemma-4-31B-it
+AI_API_KEY=YOUR_MODEL_ACCESS_KEY
+```
+
+Keep the secret out of chat, Git, client configuration and workflow inputs.
+Restart the running Edge Functions command so it reloads this file, then retry
+the visibly fictional fixture. The existing phone APK can use the newly
+configured backend without a rebuild. A successful response still needs owner
+review before it can become part of a published summary. Live extraction remains
+unverified until that provider call succeeds.
 
 Only the contact-card path is a complete anonymous phone-to-browser demo without
 OAuth configuration. The private medical path has separate real API/browser tests

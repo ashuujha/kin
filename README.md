@@ -20,8 +20,11 @@ The app, browser client, database access controls and model adapter are implemen
 Flutter, browser/backend and database checks pass, the local HTTP flow passes on
 the laptop and in CI, and an installable Android debug APK compiles. The receiver
 also passes real browser tests through temporary HTTPS. See [verification evidence](docs/VALIDATION.md).
-Live Google OAuth, a live Gemma image call, permanent hosting and a physical
-Android walkthrough remain pending. Local tests do not count as live
+The physical Android preview installs and local password login works, as reported
+by the owner. The updated app adds consistent navigation, Google account creation
+and sign-in UI, in-app privacy information and clear extraction errors.
+Live Google OAuth, a live Gemma image call, permanent hosting and the complete
+physical Android walkthrough remain pending. Local tests do not count as live
 AI evidence. Consult CI and [docs/DEMO.md](docs/DEMO.md) before presenting a feature
 as demonstrated.
 
@@ -86,6 +89,11 @@ appropriately. HTTP and local password testing are debug-only development paths;
 they are not a secure public sharing deployment. Google PKCE needs OAuth setup.
 
 ## Live services
+
+Follow [the final app connection guide](docs/LAUNCH.md). It includes the exact
+Google callback URLs and a checked `npm run production:configure` command. The
+final profile uses hosted Supabase and a stable browser origin, verifies that
+Google/signup are enabled, and disables local password login.
 
 1. Create a Supabase project; apply migrations with `supabase db push`.
 2. Configure Google OAuth in Supabase. Use its `/auth/v1/callback` URL in Google;

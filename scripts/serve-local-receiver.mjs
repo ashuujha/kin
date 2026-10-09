@@ -112,7 +112,7 @@ const server=createServer(async(req,res)=>{
       res.end(body);return;
     }
     if(!['GET','HEAD'].includes(req.method)){res.writeHead(405);res.end();return;}
-    const spa=['/','/s','/e','/auth/callback'].includes(url.pathname);
+    const spa=['/','/s','/e','/privacy','/auth/callback'].includes(url.pathname);
     const path=spa?resolve(dist,'index.html'):resolve(dist,`.${decodeURIComponent(url.pathname)}`);
     if(!path.startsWith(dist+sep) || (!spa && !url.pathname.startsWith('/assets/'))){res.writeHead(404);res.end('Not found');return;}
     const info=await stat(path);

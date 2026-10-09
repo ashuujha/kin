@@ -17,21 +17,31 @@ class KinApp extends StatefulWidget {
 
 class _KinAppState extends State<KinApp> {
   final navigator = GlobalKey<NavigatorState>();
+  final messenger = GlobalKey<ScaffoldMessengerState>();
   StreamSubscription<AuthState>? subscription;
   @override
   void initState() {
     super.initState();
     if (widget.configured) {
-      subscription = Supabase.instance.client.auth.onAuthStateChange.listen((
-        event,
-      ) {
-        if (event.session == null) {
-          navigator.currentState?.popUntil((r) => r.isFirst);
-          PaintingBinding.instance.imageCache.clear();
-          PaintingBinding.instance.imageCache.clearLiveImages();
-        }
-        if (mounted) setState(() {});
-      });
+      subscription = Supabase.instance.client.auth.onAuthStateChange.listen(
+        (event) {
+          if (event.session == null) {
+            navigator.currentState?.popUntil((r) => r.isFirst);
+            PaintingBinding.instance.imageCache.clear();
+            PaintingBinding.instance.imageCache.clearLiveImages();
+          }
+          if (mounted) setState(() {});
+        },
+        onError: (Object _) {
+          messenger.currentState?.showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Google sign-in could not complete. Please try again.',
+              ),
+            ),
+          );
+        },
+      );
     }
   }
 
@@ -49,6 +59,7 @@ class _KinAppState extends State<KinApp> {
       debugShowCheckedModeBanner: false,
       theme: kinTheme(),
       navigatorKey: navigator,
+      scaffoldMessengerKey: messenger,
       home: client?.auth.currentUser == null
           ? AuthScreen(configured: widget.configured)
           : HomeScreen(

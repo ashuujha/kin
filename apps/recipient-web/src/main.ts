@@ -8,7 +8,8 @@ const header = element('header',undefined,'site-header');
 const brand = element('a','kin','brand'); brand.href='/';
 header.append(brand,element('span','Shared with care','header-caption'));
 const main = element('main'); main.id='main';
-const footer = element('footer','Your information. Your permission.');
+const footer = element('footer','Your information. Your permission. ');
+const privacyLink=element('a','Privacy','text-link');privacyLink.href='/privacy';footer.append(privacyLink);
 root.append(header,main,footer);
 const url = import.meta.env.VITE_SUPABASE_PROXY === 'true'
   ? `${location.origin}/backend` : import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -143,11 +144,25 @@ async function loadContacts() {
 }
 async function route() {
   const path=location.pathname;
-  if (!client) {message('Kin is ready to connect','This browser app needs its public Supabase project URL and key. See the repository setup guide.');return;}
+  if (path==='/privacy') {
+    clearDisplay();heading('KIN / PRIVACY','Your information. Your permission.',
+      'How Kin handles your account, records and shared information.');
+    for (const [title,text] of [
+      ['Account access','Google sign-in identifies your account using your basic profile and email. Kin does not request Google Drive or Gmail access.'],
+      ['Private records','Prescription images and history are accessible to their owner. Requesting AI extraction sends the selected image to the configured AI provider through the server. The server and provider process readable data; end-to-end encryption is not claimed.'],
+      ['Selected sharing','Medical invitations show a selected summary to the invited Google account for 24 hours. Originals and full history remain private. Public contact cards show chosen contacts to anyone with their link.'],
+      ['Your controls','You can delete prescriptions and revoke invitations or contact cards. Revocation stops future access, but cannot erase existing copies. Account erasure and backup retention still require operator handling.'],
+      ['Hackathon use','Use fictional records for this hackathon build. Kin provides information from records and does not diagnose, prescribe or recommend treatment.'],
+    ]) {const block=card(title);block.append(element('p',text));main.append(block);}
+    return;
+  }
+  if (!client && ['/e','/s','/auth/callback'].includes(path)) {
+    message('Service not connected','This build is not connected to the sharing service. Ask the owner for a link from the configured app.');return;
+  }
   if (path==='/e') await showContacts();
   else if (path==='/s' || path==='/auth/callback') {
     // getSession waits for the SDK’s PKCE callback handling before accepting the pending link.
-    await client.auth.getSession();
+    await client?.auth.getSession();
     if (path==='/auth/callback') history.replaceState(null,'','/s');
     await showSummary();
   } else {

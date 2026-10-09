@@ -3,7 +3,7 @@
 | Check | Result | Where |
 |---|---|---|
 | Flutter analysis | Clean | Local and CI |
-| Flutter tests | 4 passed | Local and CI |
+| Flutter tests | 6 passed after final UI changes | Local; preceding CI had 4 |
 | Browser tests | 7 passed | Local and CI |
 | Deno extraction/token/request tests | 5 passed | Local and CI |
 | Backend TypeScript check | Passed with pinned SDK and lockfile | Local and CI |
@@ -18,7 +18,7 @@
 | Android debug APK compilation | Passed | GitHub Actions |
 | Dependency audit | Zero findings at implementation | Local npm audit |
 
-The [CI run](https://github.com/ashuujha/kin/actions/runs/37903881796) checks database
+The [CI run](https://github.com/ashuujha/kin/actions/runs/37909774277) checks database
 ownership, forwarded-account rejection, expiry, revocation and publication limits.
 It also rejects unrelated linked Google emails and unverified provider emails.
 The HTTP test additionally exercises private image upload/download, metadata
@@ -36,7 +36,10 @@ The [configured APK build](https://github.com/ashuujha/kin/actions/runs/37903925
 passed for source `c2894adf68d7e371f33c8e39e0bd8571e986f75c`. It compiles separate
 Android CPU builds with the temporary HTTPS backend/receiver and labelled local
 password login. The earlier 0.1.0 preview opened a setup screen without backend
-configuration. APKs are debug-signed, not Play Store releases. Physical installation,
+configuration. APKs are debug-signed, not Play Store releases. The user reports
+successful physical installation and local password login on Android. The phone
+shows an extraction failure, consistent with the independently tested 503 for
+the empty model key. Manual review and contact sharing on that physical device,
 Google PKCE return and the live two-account walkthrough remain pending.
 
 The [0.1.1 local preview](https://github.com/ashuujha/kin/releases/tag/v0.1.1-local-preview)
@@ -60,3 +63,9 @@ so fixtures remain readable by the real Auth API. See [LOCAL_DEMO.md](LOCAL_DEMO
 
 The interactive Graphify map is a development aid, not a security audit. Its report
 lists parser/deduplication limitations and unavailable exact semantic token counts.
+
+The 0.1.2 source adds consistent mobile navigation, a Google account-entry screen,
+privacy information and bounded extraction error messages. The configuration
+guard confirms hosted Google/signup settings before generating public client
+profiles. The user confirmed hosted Supabase/Google setup is still needed, and no
+AI key is present. These changes do not establish live OAuth or extraction.

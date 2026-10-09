@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<RecordMap>> records;
   bool uploading = false;
+  int section = 0;
   @override
   void initState() {
     super.initState();
@@ -84,172 +85,267 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text(
-        'kin',
-        style: TextStyle(
-          fontSize: 34,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -2,
-        ),
-      ),
-      actions: [
-        IconButton(
-          tooltip: 'Sign out',
-          icon: const Icon(Icons.logout),
-          onPressed: () async {
-            try {
-              await widget.repository.client.auth.signOut();
-            } catch (_) {
-              if (context.mounted) {
-                showNotice(context, 'Could not sign out. Retry.');
-              }
-            }
-          },
-        ),
-      ],
-    ),
-    body: RefreshIndicator(
-      onRefresh: refresh,
-      child: ListView(
-        padding: const EdgeInsets.all(22),
-        children: [
-          const SizedBox(height: 16),
-          Text(
-            'Your care,\nin context.',
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          const SizedBox(height: 12),
-          const Text('Private prescriptions. A summary you choose to share.'),
-          const SizedBox(height: 22),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () =>
-                      open(HistoryScreen(repository: widget.repository)),
-                  icon: const Icon(Icons.history),
-                  label: const Text('History'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () =>
-                      open(SummaryScreen(repository: widget.repository)),
-                  icon: const Icon(Icons.fact_check_outlined),
-                  label: const Text('Summary'),
-                ),
+    appBar: section == 0
+        ? AppBar(
+            title: const KinBrand(),
+            actions: [
+              IconButton(
+                tooltip: 'Sign out',
+                icon: const Icon(Icons.logout),
+                onPressed: () async {
+                  try {
+                    await widget.repository.client.auth.signOut();
+                  } catch (_) {
+                    if (context.mounted) {
+                      showNotice(context, 'Could not sign out. Retry.');
+                    }
+                  }
+                },
               ),
             ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () =>
-                      open(FamilyScreen(repository: widget.repository)),
-                  icon: const Icon(Icons.people_outline),
-                  label: const Text('Family access'),
-                ),
-              ),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () =>
-                      open(ContactScreen(repository: widget.repository)),
-                  icon: const Icon(Icons.qr_code),
-                  label: const Text('Contact QR'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Prescriptions',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              BusyButton(
-                busy: uploading,
-                label: 'Add image',
-                onPressed: upload,
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'One typed English page · JPEG / PNG · up to 5 MB',
-            style: TextStyle(fontSize: 12, color: Color(0xff5c7064)),
-          ),
-          FutureBuilder<List<RecordMap>>(
-            future: records,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return KinCard(
-                  title: 'Records could not load',
-                  child: TextButton(
-                    onPressed: refresh,
-                    child: const Text('Try again'),
+          )
+        : null,
+    body: section == 0
+        ? RefreshIndicator(
+            onRefresh: refresh,
+            child: ListView(
+              padding: const EdgeInsets.all(22),
+              children: [
+                const SizedBox(height: 12),
+                const Text(
+                  'YOUR CARE, ORGANIZED',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.5,
+                    color: Color(0xff65766b),
                   ),
-                );
-              }
-              if (!snapshot.hasData) {
-                return const Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-              if (snapshot.data!.isEmpty) {
-                return const KinCard(
-                  title: 'Start with one prescription',
-                  icon: Icons.description_outlined,
-                  child: Text(
-                    'Upload a fictional prescription. Extract its fields, compare them with the image, and save what you reviewed.',
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'A clearer picture\nof your care.',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Keep your records close. Share only what matters.',
+                  style: TextStyle(color: Color(0xff65766b)),
+                ),
+                const SizedBox(height: 22),
+                Container(
+                  padding: const EdgeInsets.all(23),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff173d33),
+                    borderRadius: BorderRadius.circular(26),
                   ),
-                );
-              }
-              return Column(
-                children: snapshot.data!
-                    .map(
-                      (doc) => Card(
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(18),
-                          leading: const Icon(Icons.description_outlined),
-                          title: Text(doc['clinic'] ?? 'Prescription'),
-                          subtitle: Text(
-                            '${doc['prescription_date'] ?? 'Date not recorded'}\n${doc['status'] == 'reviewed'
-                                ? 'Owner reviewed'
-                                : doc['status'] == 'draft'
-                                ? 'Draft · needs review'
-                                : doc['status'] == 'failed'
-                                ? 'Extraction failed · retry or enter manually'
-                                : doc['status'] == 'processing'
-                                ? 'Extraction in progress'
-                                : 'Ready to extract'}',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const KinBadge(
+                        'PRIVATE RECORDS',
+                        icon: Icons.lock_outline,
+                        dark: true,
+                      ),
+                      const SizedBox(height: 18),
+                      const Text(
+                        'One prescription.\nOne step closer.',
+                        style: TextStyle(
+                          fontSize: 27,
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                          letterSpacing: -.7,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Add an image, review the details, and build your prescription history.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Color(0xffd4e5d3),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: uploading ? null : upload,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xffe4eedf),
+                            foregroundColor: const Color(0xff173d33),
                           ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => open(
-                            ReviewScreen(
-                              repository: widget.repository,
-                              document: doc,
-                            ),
+                          icon: uploading
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.add_rounded),
+                          label: Text(
+                            uploading
+                                ? 'Adding prescription…'
+                                : 'Add a prescription',
                           ),
                         ),
                       ),
-                    )
-                    .toList(),
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'Fictional records only · no diagnosis or treatment advice',
-            style: TextStyle(fontSize: 12, color: Color(0xff5c7064)),
-          ),
-        ],
-      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 14),
+                KinActionCard(
+                  title: 'Your shared summary',
+                  description: 'Choose the details your family can see.',
+                  icon: Icons.fact_check_outlined,
+                  onTap: () => setState(() => section = 2),
+                ),
+                KinActionCard(
+                  title: 'Emergency contact card',
+                  description: 'A QR that opens in any browser.',
+                  icon: Icons.qr_code_2_rounded,
+                  onTap: () => setState(() => section = 4),
+                ),
+                const SizedBox(height: 26),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Prescriptions',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    TextButton(
+                      onPressed: () => setState(() => section = 1),
+                      child: const Text('View history'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'One typed English page · JPEG / PNG · up to 5 MB',
+                  style: TextStyle(fontSize: 12, color: Color(0xff5c7064)),
+                ),
+                FutureBuilder<List<RecordMap>>(
+                  future: records,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return KinCard(
+                        title: 'Records could not load',
+                        child: TextButton(
+                          onPressed: refresh,
+                          child: const Text('Try again'),
+                        ),
+                      );
+                    }
+                    if (!snapshot.hasData) {
+                      return const Padding(
+                        padding: EdgeInsets.all(32),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                    if (snapshot.data!.isEmpty) {
+                      return const KinCard(
+                        title: 'Start with one prescription',
+                        icon: Icons.description_outlined,
+                        child: Text(
+                          'Add a prescription image above. Your reviewed records will appear here.',
+                        ),
+                      );
+                    }
+                    return Column(
+                      children: snapshot.data!
+                          .map(
+                            (doc) => Card(
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(18),
+                                leading: Container(
+                                  width: 42,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffe8eee6),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(Icons.description_outlined),
+                                ),
+                                title: Text(
+                                  doc['clinic'] ?? 'Prescription',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  '${doc['prescription_date'] ?? 'Date not recorded'}\n${doc['status'] == 'reviewed'
+                                      ? 'Owner reviewed'
+                                      : doc['status'] == 'draft'
+                                      ? 'Draft · needs review'
+                                      : doc['status'] == 'failed'
+                                      ? 'Needs review · manual entry available'
+                                      : doc['status'] == 'processing'
+                                      ? 'Extraction in progress'
+                                      : 'Ready to extract'}',
+                                ),
+                                trailing: const Icon(Icons.chevron_right),
+                                onTap: () => open(
+                                  ReviewScreen(
+                                    repository: widget.repository,
+                                    document: doc,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Your records provide context. They do not recommend treatment.',
+                  style: TextStyle(fontSize: 12, color: Color(0xff5c7064)),
+                ),
+              ],
+            ),
+          )
+        : switch (section) {
+            1 => HistoryScreen(repository: widget.repository),
+            2 => SummaryScreen(repository: widget.repository),
+            3 => FamilyScreen(repository: widget.repository),
+            _ => ContactScreen(repository: widget.repository),
+          },
+    bottomNavigationBar: NavigationBar(
+      selectedIndex: section,
+      onDestinationSelected: (value) {
+        setState(() => section = value);
+        if (value == 0) refresh();
+      },
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(Icons.grid_view_outlined),
+          selectedIcon: Icon(Icons.grid_view_rounded),
+          label: 'Home',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.history_outlined),
+          selectedIcon: Icon(Icons.history_rounded),
+          label: 'History',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.fact_check_outlined),
+          selectedIcon: Icon(Icons.fact_check_rounded),
+          label: 'Summary',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.people_outline),
+          selectedIcon: Icon(Icons.people_rounded),
+          label: 'Family',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.qr_code_2_rounded),
+          label: 'Contact QR',
+        ),
+      ],
     ),
   );
 }

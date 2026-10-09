@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../../core/extraction_error.dart';
 import '../../core/kin_repository.dart';
 import '../../core/widgets.dart';
 
@@ -112,11 +113,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
           method = 'AI extracted · owner review required';
         });
       }
-    } catch (_) {
+    } catch (failure) {
       if (mounted) {
-        setState(
-          () => error = 'AI extraction did not complete. No AI result was saved. Retry or enter fields manually.',
-        );
+        setState(() => error = extractionFailureMessage(failure));
       }
     } finally {
       if (mounted) setState(() => busy = false);
