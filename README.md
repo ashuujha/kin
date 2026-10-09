@@ -5,6 +5,10 @@ A reviewed medical summary, shared with permission, opened in any browser.
 [![CI](https://github.com/ashuujha/kin/actions/workflows/ci.yml/badge.svg)](https://github.com/ashuujha/kin/actions/workflows/ci.yml)
 [![Android APK](https://github.com/ashuujha/kin/actions/workflows/android-build.yml/badge.svg)](https://github.com/ashuujha/kin/actions/workflows/android-build.yml)
 
+[Browser receiver](https://ashuujha.github.io/kin/) ·
+[Updated local Android demo](https://github.com/ashuujha/kin/releases/tag/v0.1.2-local-preview) ·
+[Three manual account steps](docs/MANUAL_SETUP.md)
+
 Kin is a hackathon prototype. The Flutter Android owner app stores private
 prescription images, extracts draft fields with Gemma and requires owner review.
 Owners search reviewed medicine/date history and share only selected summaries.
@@ -23,7 +27,8 @@ also passes real browser tests through temporary HTTPS. See [verification eviden
 The physical Android preview installs and local password login works, as reported
 by the owner. The updated app adds consistent navigation, Google account creation
 and sign-in UI, in-app privacy information and clear extraction errors.
-Live Google OAuth, a live Gemma image call, permanent hosting and the complete
+The browser receiver and privacy page are publicly deployed on GitHub Pages.
+Live Google OAuth, a live Gemma image call, hosted backend setup and the complete
 physical Android walkthrough remain pending. Local tests do not count as live
 AI evidence. Consult CI and [docs/DEMO.md](docs/DEMO.md) before presenting a feature
 as demonstrated.
@@ -94,6 +99,9 @@ Follow [the final app connection guide](docs/LAUNCH.md). It includes the exact
 Google callback URLs and a checked `npm run production:configure` command. The
 final profile uses hosted Supabase and a stable browser origin, verifies that
 Google/signup are enabled, and disables local password login.
+The quickest assisted path is [MANUAL_SETUP.md](docs/MANUAL_SETUP.md): save provider
+credentials in ignored `.env.launch.local`, then run `npm run production:deploy`.
+GitHub Pages already hosts the receiver, so Render is an optional alternative.
 
 1. Create a Supabase project; apply migrations with `supabase db push`.
 2. Configure Google OAuth in Supabase. Use its `/auth/v1/callback` URL in Google;

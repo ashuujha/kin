@@ -18,7 +18,7 @@
 | Android debug APK compilation | Passed | GitHub Actions |
 | Dependency audit | Zero findings at implementation | Local npm audit |
 
-The [CI run](https://github.com/ashuujha/kin/actions/runs/37909774277) checks database
+The [CI run](https://github.com/ashuujha/kin/actions/runs/37915515356) checks database
 ownership, forwarded-account rejection, expiry, revocation and publication limits.
 It also rejects unrelated linked Google emails and unverified provider emails.
 The HTTP test additionally exercises private image upload/download, metadata
@@ -32,8 +32,8 @@ and non-persistence, then opens and revokes a signed-out contact card. It passed
 over the temporary HTTPS receiver. Screenshots were visually checked at a 390px
 mobile viewport. Those authenticated sessions use synthetic eligibility fixtures.
 
-The [configured APK build](https://github.com/ashuujha/kin/actions/runs/37903925353)
-passed for source `c2894adf68d7e371f33c8e39e0bd8571e986f75c`. It compiles separate
+The [updated configured APK build](https://github.com/ashuujha/kin/actions/runs/37913587802)
+passed for source `a2dc4d12ecd78fc711c9bb86e3fe091ea00b3f63`. It compiles separate
 Android CPU builds with the temporary HTTPS backend/receiver and labelled local
 password login. The earlier 0.1.0 preview opened a setup screen without backend
 configuration. APKs are debug-signed, not Play Store releases. The user reports
@@ -42,7 +42,7 @@ shows an extraction failure, consistent with the independently tested 503 for
 the empty model key. Manual review and contact sharing on that physical device,
 Google PKCE return and the live two-account walkthrough remain pending.
 
-The [0.1.1 local preview](https://github.com/ashuujha/kin/releases/tag/v0.1.1-local-preview)
+The [0.1.2 local preview](https://github.com/ashuujha/kin/releases/tag/v0.1.2-local-preview)
 is public. The ARM64 APK is 87.1 MiB and ARMv7 is 67.1 MiB. Both archives, CPU
 libraries and compiled HTTPS client values were verified, and checksums are
 published with the release. These remain local fictional-data debug builds.
@@ -50,7 +50,12 @@ published with the release. These remain local fictional-data debug builds.
 Live Gemma extraction requires a configured model key and an actual fictional
 image request. Neither supported provider has been called with a live key here.
 No provider image support, clinical accuracy or real-patient safety claim is made.
-Render deployment remains pending. A temporary HTTPS tunnel now serves the local
+The [permanent browser receiver](https://ashuujha.github.io/kin/) deployed successfully
+in [its hosting run](https://github.com/ashuujha/kin/actions/runs/37915515367).
+Homepage, privacy, invitation and OAuth callback paths return HTML successfully.
+An isolated mobile browser confirmed actual page rendering and the truthful
+missing-backend state. This public deployment is not connected to hosted Supabase
+yet. Render deployment remains an optional alternative. A temporary HTTPS tunnel serves the local
 production receiver assets and a same-origin API proxy; it lasts only while the
 laptop's local services and tunnel remain running.
 
