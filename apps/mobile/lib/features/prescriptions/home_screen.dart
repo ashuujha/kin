@@ -180,6 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   height: 18,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
+                                    color: Colors.white,
                                   ),
                                 )
                               : const Icon(Icons.add_rounded),
