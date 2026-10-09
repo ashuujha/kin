@@ -1,4 +1,16 @@
-# Verification record · 9 October 2026
+# Hosted release status · 9 October 2026
+
+The signed [0.1.3 hosted build](https://github.com/ashuujha/kin/actions/runs/37922512583) passed release compilation, Flutter analysis and tests. ARM64 is 19,390,840 bytes; ARMv7 is 16,897,864 bytes. Archive CRCs, CPU libraries, compiled hosted Supabase URL and the persistent distribution certificate were checked. Public APKs and SHA-256 checksums are attached to the [prerelease](https://github.com/ashuujha/kin/releases/tag/v0.1.3-hosted). Uninstall older debug-signed previews before installing.
+
+Hosted Supabase migrations and both Edge Functions are deployed. All 29 SQL authorization checks passed against the hosted database in a rolled-back fictional-fixture transaction. The [browser receiver deployment](https://github.com/ashuujha/kin/actions/runs/37922433025) uses hosted public client configuration.
+
+A real Google Gemma call extracted one Paracetamol medication and the expected date from the visibly fictional typed-image fixture. Six backend regression tests and TypeScript checks passed after filtering reasoning parts and rejecting incomplete responses. This establishes provider connectivity and schema handling, not medical accuracy. AI remains a draft requiring owner review.
+
+Downloaded Google web-client credentials were applied privately. An invalid-code credential probe returned `invalid_grant`, confirming credential acceptance. After the Google redirect setting was saved, a fresh authorization request opened the Google account sign-in page without `redirect_uri_mismatch` or an OAuth error page. The Google authorized redirect URI is `https://wbhjgppzyhqlagjxyzrn.supabase.co/auth/v1/callback`. Real Google account return, physical-device installation and an actual two-account hosted walkthrough remain pending. These are not represented as completed.
+
+The prior local verification record below is historical; its local-only service and missing-key statements describe earlier builds.
+
+# Earlier local verification record
 
 | Check | Result | Where |
 |---|---|---|
@@ -74,3 +86,10 @@ privacy information and bounded extraction error messages. The configuration
 guard confirms hosted Google/signup settings before generating public client
 profiles. The user confirmed hosted Supabase/Google setup is still needed, and no
 AI key is present. These changes do not establish live OAuth or extraction.
+
+The hosted HTTP integration subsequently passed private upload, cross-user denial,
+actual Gemma draft extraction, owner review, history lookup, recipient snapshot,
+forwarded-account rejection, revocation, signed-out contacts and deletion.
+Temporary fictional users and files were cleaned up. Authentication in this test
+used admin-issued sessions and an explicitly synthetic Google identity; it does
+not establish real Google OAuth or physical-device behavior.
