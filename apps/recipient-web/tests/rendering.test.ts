@@ -9,6 +9,8 @@ vi.mock('@supabase/supabase-js',()=>({createClient:()=>api}));
 beforeEach(()=>{
   vi.resetModules();vi.useFakeTimers();vi.stubGlobal('crypto',{subtle:{digest:async()=>new Uint8Array(32).buffer}});
   vi.stubEnv('VITE_SUPABASE_URL','https://fictional.supabase.co');vi.stubEnv('VITE_SUPABASE_ANON_KEY','fictional-public-key');
+  vi.stubEnv('BASE_URL','/');
+  vi.stubEnv('VITE_GOOGLE_ENABLED','true');
   document.body.innerHTML='<div id="app"></div>';sessionStorage.clear();
   api.auth.getSession.mockResolvedValue({data:{session:{user:{id:'fictional'}}}});
   api.auth.onAuthStateChange.mockReturnValue({data:{subscription:{unsubscribe:vi.fn()}}});
@@ -17,6 +19,18 @@ beforeEach(()=>{
 afterEach(()=>{vi.clearAllTimers();vi.useRealTimers();vi.unstubAllEnvs();vi.unstubAllGlobals();});
 async function flush(){await vi.advanceTimersByTimeAsync(0);}
 describe('medical display lifecycle with synthetic API responses',()=>{
+  it('preserves mounted invitation paths and Google callback URLs',async()=>{
+    vi.stubEnv('BASE_URL','/kin/');
+    history.replaceState(null,'','/kin/s#'+'c'.repeat(43));
+    api.auth.getSession.mockResolvedValue({data:{session:null}});
+    api.auth.signInWithOAuth.mockResolvedValue({error:null});
+    await import('../src/main');await flush();
+    expect(sessionStorage.getItem('kin.s.token')).toBe('c'.repeat(43));
+    expect(document.querySelector('.brand')?.getAttribute('href')).toBe('/kin/');
+    const login=Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='Continue with Google');
+    expect(login).toBeDefined();login!.click();await flush();
+    expect(api.auth.signInWithOAuth).toHaveBeenCalledWith({provider:'google',options:{redirectTo:`${location.origin}/kin/auth/callback`,queryParams:{prompt:'select_account'}}});
+  });
   it('escapes record text, avoids record persistence and clears on revocation',async()=>{
     history.replaceState(null,'','/s#'+'a'.repeat(43));
     api.rpc.mockImplementation(async(name:string)=>name==='accept_share'?{data:'fictional-share',error:null}:{data:{

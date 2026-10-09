@@ -1,0 +1,41 @@
+name: Browser receiver
+on:
+  push:
+    branches: [main]
+    paths: ['apps/recipient-web/**', 'scripts/prepare-pages.mjs', '.github/workflows/receiver-pages.yml', 'package-lock.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: receiver-pages
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+      - run: npm ci
+      - run: npm run build -w apps/recipient-web -- --base=/kin/
+        env:
+          VITE_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+          VITE_GOOGLE_ENABLED: 'true'
+          VITE_SUPABASE_PROXY: 'false'
+      - run: node scripts/prepare-pages.mjs
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
+        with:
+          path: apps/recipient-web/dist
+      - name: Publish receiver
+        id: publish
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e

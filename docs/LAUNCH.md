@@ -1,5 +1,9 @@
 # Connect the final hackathon app
 
+For the shortest assisted setup, follow [the three manual account steps](MANUAL_SETUP.md)
+and use `npm run production:deploy`. The helper completes the commands/configuration
+below and dispatches the hosted receiver and Google-configured Android builds.
+
 The app has Google account creation/sign-in, private prescription storage,
 extraction with owner review, history, selected family invitations and a separate
 contact QR. A recipient uses a normal browser. Live Google and AI require the
@@ -12,6 +16,7 @@ project URL, project reference and publishable/anon key. Keep its database passw
 and server keys private. Sign into the CLI, then apply Kin's migrations:
 
 ```sh
+npm run local:keys
 npx supabase login
 npx supabase link --project-ref YOUR_PROJECT_REF
 npx supabase db push

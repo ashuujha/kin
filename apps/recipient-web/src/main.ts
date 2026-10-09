@@ -4,18 +4,20 @@ import {captureLink,hashToken,isExpired,withDeadline,type Summary,type ContactCa
 import './style.css';
 
 const root = document.querySelector<HTMLDivElement>('#app')!;
+const base=import.meta.env.BASE_URL.replace(/\/$/,'');
+const appPath=()=>location.pathname.slice(base.length).replace(/\/$/,'') || '/';
 const header = element('header',undefined,'site-header');
-const brand = element('a','kin','brand'); brand.href='/';
+const brand = element('a','kin','brand'); brand.href=`${base}/`;
 header.append(brand,element('span','Shared with care','header-caption'));
 const main = element('main'); main.id='main';
 const footer = element('footer','Your information. Your permission. ');
-const privacyLink=element('a','Privacy','text-link');privacyLink.href='/privacy';footer.append(privacyLink);
+const privacyLink=element('a','Privacy','text-link');privacyLink.href=`${base}/privacy`;footer.append(privacyLink);
 root.append(header,main,footer);
 const url = import.meta.env.VITE_SUPABASE_PROXY === 'true'
   ? `${location.origin}/backend` : import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 const client = url && key ? createClient(url,key,{auth:{flowType:'pkce',storage:sessionStorage,persistSession:true,detectSessionInUrl:true}}) : null;
-const captured = captureLink(window.location);
+const captured = captureLink({pathname:appPath(),hash:location.hash});
 if (captured) {
   sessionStorage.setItem(`kin.${captured.kind}.token`,captured.token);
   history.replaceState(null,'',window.location.pathname);
@@ -61,7 +63,7 @@ async function loadSummary() {
     const info=card('Private by permission');
     info.append(element('p','Original prescriptions and full medical history stay private. This link expires 24 hours after the owner created it.'));
     main.append(info,button('Continue with Google',async()=>{
-      const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:`${location.origin}/auth/callback`,queryParams:{prompt:'select_account'}}});
+      const {error}=await client.auth.signInWithOAuth({provider:'google',options:{redirectTo:`${location.origin}${base}/auth/callback`,queryParams:{prompt:'select_account'}}});
       if (error) message('Could not sign in','Please retry. The owner can also send a new invitation.',showSummary);
     })); return;
   }
@@ -143,7 +145,7 @@ async function loadContacts() {
   poll=setInterval(()=>{void showContacts();},30000);
 }
 async function route() {
-  const path=location.pathname;
+  const path=appPath();
   if (path==='/privacy') {
     clearDisplay();heading('KIN / PRIVACY','Your information. Your permission.',
       'How Kin handles your account, records and shared information.');
@@ -163,7 +165,7 @@ async function route() {
   else if (path==='/s' || path==='/auth/callback') {
     // getSession waits for the SDK’s PKCE callback handling before accepting the pending link.
     await client?.auth.getSession();
-    if (path==='/auth/callback') history.replaceState(null,'','/s');
+    if (path==='/auth/callback') history.replaceState(null,'',`${base}/s`);
     await showSummary();
   } else {
     clearDisplay();heading('KIN / YOUR INFORMATION, YOUR PERMISSION','Care begins with context.',

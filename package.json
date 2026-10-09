@@ -16,6 +16,7 @@
     "test:proxy": "node scripts/test-local-proxy.mjs",
     "local:configure": "node scripts/configure-local.mjs",
     "production:configure": "node scripts/configure-production.mjs",
+    "production:deploy": "node scripts/deploy-production.mjs",
     "local:keys": "node scripts/prepare-local-keys.mjs",
     "local:bind": "python3 scripts/bind-local-backend.py",
     "local:start": "node scripts/start-local.mjs",

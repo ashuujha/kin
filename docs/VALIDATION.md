@@ -4,7 +4,7 @@
 |---|---|---|
 | Flutter analysis | Clean | Local and CI |
 | Flutter tests | 6 passed after final UI changes | Local; preceding CI had 4 |
-| Browser tests | 7 passed | Local and CI |
+| Browser tests | 8 passed after mounted-path support | Local; preceding CI had 7 |
 | Deno extraction/token/request tests | 5 passed | Local and CI |
 | Backend TypeScript check | Passed with pinned SDK and lockfile | Local and CI |
 | Browser production build | Passed | Local and CI |
