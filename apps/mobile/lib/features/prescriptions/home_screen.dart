@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 11,
                   letterSpacing: 2,
-                  color: Color(0xffdfb77a),
+                  color: Color(0xff60823f),
                 ),
               ),
             ),
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.all(24),
               child: Text(
                 'Fictional records only · hackathon release',
-                style: TextStyle(fontSize: 11, color: Color(0xff9aa8ba)),
+                style: TextStyle(fontSize: 11, color: Color(0xff707079)),
               ),
             ),
           ],
@@ -211,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
               fontSize: 11,
               letterSpacing: 2,
-              color: Color(0xffdfb77a),
+              color: Color(0xff60823f),
             ),
           ),
           const SizedBox(height: 14),
@@ -222,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 10),
           const Text(
             'Prescriptions, laboratory results and linked scans. Organized around you.',
-            style: TextStyle(color: Color(0xff9aa8ba)),
+            style: TextStyle(color: Color(0xff707079)),
           ),
           const SizedBox(height: 24),
           FutureBuilder<List<RecordMap>>(
@@ -319,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 24),
           const Text(
             'Extracted details require your review. Prescription entries do not establish current medication use.',
-            style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
+            style: TextStyle(fontSize: 12, color: Color(0xff707079)),
           ),
         ],
       ),

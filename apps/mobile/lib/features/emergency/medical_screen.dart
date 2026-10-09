@@ -105,7 +105,7 @@ class _MedicalScreenState extends State<MedicalScreen> {
               const SizedBox(height: 12),
               const Text(
                 'A doctor or first responder can scan this separate QR and read the selected medical snapshot in a browser. Kin cannot verify that the person scanning is a doctor.',
-                style: TextStyle(color: Color(0xff9aa8ba)),
+                style: TextStyle(color: Color(0xff707079)),
               ),
               const SizedBox(height: 18),
               KinCard(
@@ -150,7 +150,7 @@ class _MedicalScreenState extends State<MedicalScreen> {
                   padding: EdgeInsets.symmetric(vertical: 12),
                   child: Text(
                     'Review a lab report first to include its results.',
-                    style: TextStyle(color: Color(0xff9aa8ba)),
+                    style: TextStyle(color: Color(0xff707079)),
                   ),
                 ),
               ...labs.map(
@@ -207,7 +207,7 @@ class _MedicalScreenState extends State<MedicalScreen> {
               const SizedBox(height: 16),
               const Text(
                 'Publishing replaces the previous QR. Changes to your source records do not update this snapshot: publish again to share a new selection. Deleting a source record revokes the emergency QR. Print the QR somewhere accessible; Kin cannot unlock a phone.',
-                style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
+                style: TextStyle(fontSize: 12, color: Color(0xff707079)),
               ),
             ],
           ),

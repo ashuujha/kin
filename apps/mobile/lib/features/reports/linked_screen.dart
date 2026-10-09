@@ -138,7 +138,7 @@ class _LinkedScreenState extends State<LinkedScreen> {
         const SizedBox(height: 10),
         const Text(
           'Keep DICOM scans, imaging folders and large PDFs in Google Drive. Kin keeps an organized private reference; it does not interpret DICOM images.',
-          style: TextStyle(color: Color(0xff9aa8ba)),
+          style: TextStyle(color: Color(0xff707079)),
         ),
         const SizedBox(height: 16),
         OutlinedButton.icon(

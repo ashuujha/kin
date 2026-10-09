@@ -167,7 +167,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
         const SizedBox(height: 12),
         const Text(
           'Importing sends the selected report to the AI extraction service. Tests, values, units and source ranges are saved automatically as a private draft. Review before including them in an emergency summary.',
-          style: TextStyle(color: Color(0xff9aa8ba)),
+          style: TextStyle(color: Color(0xff707079)),
         ),
         const SizedBox(height: 22),
         BusyButton(
@@ -191,7 +191,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Text(
             'Sign in on the laboratory’s website, download your report, then import it here. Kin does not store portal passwords or bypass its login. Text PDFs: up to 10 pages / 5 MB. For scanned PDFs, import a clear image.',
-            style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
+            style: TextStyle(fontSize: 12, color: Color(0xff707079)),
           ),
         ),
         FutureBuilder<List<RecordMap>>(
@@ -397,7 +397,7 @@ class _LabDetailScreenState extends State<LabDetailScreen> {
           const SizedBox(height: 8),
           Text(
             '${report['status'] == 'reviewed' ? 'Owner reviewed' : 'Unreviewed draft'} · ${report['report_date'] ?? draft?['report_date'] ?? 'Date not recorded'}',
-            style: const TextStyle(color: Color(0xff9aa8ba)),
+            style: const TextStyle(color: Color(0xff707079)),
           ),
           const SizedBox(height: 16),
           OutlinedButton.icon(
@@ -420,7 +420,7 @@ class _LabDetailScreenState extends State<LabDetailScreen> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 error!,
-                style: const TextStyle(color: Color(0xffffb4ab)),
+                style: const TextStyle(color: Color(0xffb3261e)),
               ),
             ),
           if (report['summary'] != null)
@@ -432,7 +432,7 @@ class _LabDetailScreenState extends State<LabDetailScreen> {
             const SizedBox(height: 16),
             const Text(
               'Compare every field with the original. Unknown flags are not interpreted as normal.',
-              style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
+              style: TextStyle(fontSize: 12, color: Color(0xff707079)),
             ),
             ...results.map(
               (r) => KinCard(
@@ -458,7 +458,7 @@ class _LabDetailScreenState extends State<LabDetailScreen> {
                         r['source_excerpt'],
                         style: const TextStyle(
                           fontSize: 12,
-                          color: Color(0xff9aa8ba),
+                          color: Color(0xff707079),
                         ),
                       ),
                     ],
@@ -478,7 +478,7 @@ class _LabDetailScreenState extends State<LabDetailScreen> {
           const SizedBox(height: 24),
           const Text(
             'A report summary is information from the source, not a diagnosis or treatment recommendation.',
-            style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
+            style: TextStyle(fontSize: 12, color: Color(0xff707079)),
           ),
         ],
       ),

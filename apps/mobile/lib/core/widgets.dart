@@ -9,14 +9,14 @@ class KinBadge extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
     decoration: BoxDecoration(
-      color: dark ? const Color(0xff2c3647) : const Color(0xff242e3d),
+      color: dark ? const Color(0xffc4e59a) : const Color(0xffeef0e9),
       borderRadius: BorderRadius.circular(30),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (icon != null) ...[
-          Icon(icon, size: 13, color: const Color(0xffe7ebf2)),
+          Icon(icon, size: 13, color: const Color(0xff151525)),
           const SizedBox(width: 6),
         ],
         Flexible(
@@ -25,7 +25,7 @@ class KinBadge extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: const Color(0xffe7ebf2),
+              color: const Color(0xff151525),
             ),
           ),
         ),
@@ -58,7 +58,7 @@ class KinActionCard extends StatelessWidget {
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(icon, size: 28, color: const Color(0xffe7ebf2)),
+                  Icon(icon, size: 28, color: const Color(0xff151525)),
                   const Spacer(),
                   Text(
                     title,
@@ -73,7 +73,7 @@ class KinActionCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12,
                       height: 1.35,
-                      color: Color(0xff9aa8ba),
+                      color: Color(0xff707079),
                     ),
                   ),
                 ],
@@ -84,10 +84,10 @@ class KinActionCard extends StatelessWidget {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: const Color(0xff242e3d),
+                      color: const Color(0xffeef0e9),
                       borderRadius: BorderRadius.circular(13),
                     ),
-                    child: Icon(icon, color: const Color(0xffe7ebf2)),
+                    child: Icon(icon, color: const Color(0xff151525)),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -106,7 +106,7 @@ class KinActionCard extends StatelessWidget {
                           description,
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Color(0xff9aa8ba),
+                            color: Color(0xff707079),
                           ),
                         ),
                       ],
@@ -184,7 +184,7 @@ class BusyButton extends StatelessWidget {
             height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: Color(0xff171b22),
+              color: Color(0xffffffff),
             ),
           )
         : Text(label),

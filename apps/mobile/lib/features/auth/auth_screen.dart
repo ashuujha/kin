@@ -118,7 +118,7 @@ class _AuthScreenState extends State<AuthScreen> {
             SizedBox(height: 20),
             Text(
               'Use fictional records for the hackathon. Server and AI processing are not end-to-end encrypted.',
-              style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
+              style: TextStyle(fontSize: 12, color: Color(0xff707079)),
             ),
           ],
         ),
@@ -141,7 +141,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 style: TextStyle(
                   fontSize: 11,
                   letterSpacing: 2,
-                  color: Color(0xffdfb77a),
+                  color: Color(0xff60823f),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -154,7 +154,7 @@ class _AuthScreenState extends State<AuthScreen> {
               const Text(
                 'A private record of prescriptions, laboratory results and the information you choose to share.',
                 style: TextStyle(
-                  color: Color(0xff9aa8ba),
+                  color: Color(0xff707079),
                   fontSize: 16,
                   height: 1.6,
                 ),
@@ -187,7 +187,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Color(0xff171b22),
+                            color: Color(0xffffffff),
                           ),
                         )
                       : Row(
@@ -220,7 +220,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 const Text(
                   'New here? Your first sign-in creates your account.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Color(0xff9aa8ba)),
+                  style: TextStyle(fontSize: 12, color: Color(0xff707079)),
                 ),
               ],
               if (widget.configured && AppConfig.localAuth)
@@ -238,7 +238,7 @@ class _AuthScreenState extends State<AuthScreen> {
               const Text(
                 'Record information, not medical advice.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 11, color: Color(0xff9aa8ba)),
+                style: TextStyle(fontSize: 11, color: Color(0xff707079)),
               ),
             ],
           ),

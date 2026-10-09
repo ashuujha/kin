@@ -1,95 +1,89 @@
 import 'package:flutter/material.dart';
 
-ThemeData kinTheme() {
-  const ink = Color(0xffe7ebf2),
-      muted = Color(0xff9aa8ba),
-      bg = Color(0xff11151d),
-      surface = Color(0xff1b2230),
-      line = Color(0xff2c3647),
-      accent = Color(0xffdfb77a);
-  return ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    fontFamily: 'Roboto',
-    scaffoldBackgroundColor: bg,
-    colorScheme: const ColorScheme.dark(
-      primary: accent,
-      onPrimary: Color(0xff171b22),
-      secondary: Color(0xffa4b5cf),
-      surface: surface,
-      onSurface: ink,
-      error: Color(0xffffb4ab),
+ThemeData kinTheme() => ThemeData(
+  useMaterial3: true,
+  fontFamily: 'Roboto',
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: const Color(0xff151525),
+    primary: const Color(0xff151525),
+    surface: const Color(0xffffffff),
+    secondary: const Color(0xff91b75f),
+  ),
+  scaffoldBackgroundColor: Colors.white,
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xffffffff),
+    surfaceTintColor: Colors.transparent,
+    centerTitle: false,
+    elevation: 0,
+    scrolledUnderElevation: 0,
+    titleTextStyle: TextStyle(
+      fontFamily: 'Roboto',
+      color: Color(0xff151525),
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
     ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: bg,
-      surfaceTintColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      centerTitle: false,
-      titleTextStyle: TextStyle(
-        fontFamily: 'Roboto',
-        color: ink,
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-      ),
+  ),
+  drawerTheme: const DrawerThemeData(
+    backgroundColor: Colors.white,
+    surfaceTintColor: Colors.transparent,
+  ),
+  navigationBarTheme: NavigationBarThemeData(
+    backgroundColor: Colors.white,
+    indicatorColor: const Color(0xffc4e59a),
+    height: 72,
+    labelTextStyle: WidgetStateProperty.all(
+      const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
     ),
-    drawerTheme: const DrawerThemeData(
-      backgroundColor: Color(0xff151b25),
-      surfaceTintColor: Colors.transparent,
+  ),
+  bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Color(0xffffffff),
+    showDragHandle: true,
+  ),
+  cardTheme: CardThemeData(
+    color: const Color(0xfff5f5f2),
+    surfaceTintColor: Colors.transparent,
+    elevation: 0,
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+      side: BorderSide.none,
     ),
-    bottomSheetTheme: const BottomSheetThemeData(
-      backgroundColor: surface,
-      showDragHandle: true,
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    fillColor: const Color(0xfff5f5f2),
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: const BorderSide(color: Color(0xffeaeae7)),
     ),
-    cardTheme: CardThemeData(
-      color: surface,
-      surfaceTintColor: Colors.transparent,
-      elevation: 0,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: line),
-      ),
+    contentPadding: const EdgeInsets.all(16),
+  ),
+  filledButtonTheme: FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      minimumSize: const Size(0, 54),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
     ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: surface,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: line),
-      ),
-      contentPadding: const EdgeInsets.all(16),
+  ),
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      minimumSize: const Size(0, 50),
+      side: const BorderSide(color: Color(0xffe4e4e0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        minimumSize: const Size(0, 52),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
+  ),
+  textTheme: const TextTheme(
+    headlineLarge: TextStyle(
+      fontSize: 32,
+      fontWeight: FontWeight.w700,
+      letterSpacing: -1.2,
     ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size(0, 48),
-        side: const BorderSide(color: line),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
+    titleMedium: TextStyle(
+      fontSize: 19,
+      fontWeight: FontWeight.w600,
+      letterSpacing: -.4,
     ),
-    textTheme: const TextTheme(
-      headlineLarge: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -1,
-        color: ink,
-      ),
-      titleMedium: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-        color: ink,
-      ),
-      bodyLarge: TextStyle(fontSize: 16, height: 1.5, color: ink),
-      bodyMedium: TextStyle(fontSize: 14, height: 1.5, color: ink),
-      bodySmall: TextStyle(fontSize: 12, height: 1.45, color: muted),
-    ),
-    dividerTheme: const DividerThemeData(color: line),
-  );
-}
+    bodyLarge: TextStyle(fontSize: 16, height: 1.5),
+    bodyMedium: TextStyle(fontSize: 14, height: 1.5),
+  ),
+);
