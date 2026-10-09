@@ -10,7 +10,8 @@
     "build": "npm run build -w apps/recipient-web",
     "check:backend": "deno check --config=supabase/functions/deno.json --lock=supabase/functions/deno.lock supabase/functions/*/index.ts",
     "test:backend": "deno test --config=supabase/functions/deno.json --lock=supabase/functions/deno.lock supabase/functions/tests",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "test:integration": "node scripts/test-local-flow.mjs"
   },
   "devDependencies": {
     "deno": "2.9.6",

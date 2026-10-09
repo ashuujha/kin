@@ -1,6 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
 import {button,card,element,field,formatTime,safePhone} from './ui';
-import {captureLink,hashToken,isExpired,type Summary,type ContactCard} from './sharing';
+import {captureLink,hashToken,isExpired,withDeadline,type Summary,type ContactCard} from './sharing';
 import './style.css';
 
 const root = document.querySelector<HTMLDivElement>('#app')!;
@@ -39,10 +39,14 @@ async function signOut() {
 function sessionControls() { main.append(button('Sign out',signOut,true)); }
 
 async function showSummary() {
+  try {await loadSummary();}
+  catch {message('Access could not be checked','Medical information is hidden. Check your connection and retry.',showSummary);sessionControls();}
+}
+async function loadSummary() {
   if (!client) return;
   clearDisplay(); activeKind='summary'; const current = generation;
   heading('KIN / MEDICAL SUMMARY','Opening your shared summary…','Checking your permission securely.');
-  const {data:sessionData} = await client.auth.getSession();
+  const {data:sessionData} = await withDeadline(client.auth.getSession());
   if (current!==generation) return;
   if (!sessionData.session) {
     clearDisplay(); heading('INVITATION / 24-HOUR ACCESS','A little context. Better care.',
@@ -57,7 +61,7 @@ async function showSummary() {
   const token=sessionStorage.getItem('kin.s.token');
   let shareId=sessionStorage.getItem('kin.share.id');
   if (token) {
-    const {data,error}=await client.rpc('accept_share',{p_token_hash:await hashToken(token)});
+    const {data,error}=await withDeadline(client.rpc('accept_share',{p_token_hash:await hashToken(token)}));
     if (current!==generation) return;
     if (error || typeof data!=='string') {
       message('This share is unavailable','Use the invited Google account. The link may also have expired or been revoked.',showSummary);
@@ -67,7 +71,7 @@ async function showSummary() {
   }
   if (!shareId) {message('Open an invitation','Ask the owner to send their Kin link.');sessionControls();return;}
   const refresh=async()=>{
-    const {data,error}=await client.rpc('read_shared_summary',{p_share_id:shareId});
+    const {data,error}=await withDeadline(client.rpc('read_shared_summary',{p_share_id:shareId}));
     if (current!==generation) return;
     if (error || !data || isExpired(data.expires_at)) {
       message('Access has ended','The share expired, was revoked, or could not be checked. No medical information is displayed.',showSummary);
@@ -99,16 +103,22 @@ async function showSummary() {
     expiration=setTimeout(()=>{message('Access has ended','This share has expired.');sessionControls();},Math.max(0,Date.parse(summary.expires_at)-Date.now()));
   };
   await refresh();
-  if (current===generation) poll=setInterval(()=>{void refresh();},15000);
+  if (current===generation) poll=setInterval(()=>{void refresh().catch(()=>{
+    if(current===generation){message('Access could not be checked','Medical information is hidden. Check your connection and retry.',showSummary);sessionControls();}
+  });},15000);
 }
 
 async function showContacts() {
+  try {await loadContacts();}
+  catch {message('Contact service unavailable','Check your connection and retry.',showContacts);}
+}
+async function loadContacts() {
   if (!client) return;
   clearDisplay(); activeKind='contacts';const current=generation;
   const token=sessionStorage.getItem('kin.e.token');
   if (!token) {message('Contact card unavailable','Scan the owner’s contact QR or open their contact link.');return;}
   heading('KIN / CONTACT CARD','Opening emergency contacts…','No sign-in or installation required.');
-  const {data,error}=await client.functions.invoke('emergency-contact',{body:{token}});
+  const {data,error}=await withDeadline(client.functions.invoke('emergency-contact',{body:{token}}));
   if (current!==generation) return;
   if (error || !data) {message('Contact card unavailable','The card may have been revoked, or the service is temporarily unavailable.',showContacts);return;}
   const contacts=data as ContactCard;

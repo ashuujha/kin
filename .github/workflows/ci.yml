@@ -35,6 +35,7 @@ jobs:
       - run: npm ci
       - run: npx supabase start -x studio,logflare,vector,imgproxy,realtime,postgres-meta
       - run: npx supabase test db
+      - run: npm run test:integration
       - run: npx supabase stop
         if: always()
   mobile:

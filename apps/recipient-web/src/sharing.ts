@@ -17,3 +17,12 @@ export type Medicine = {name: string; dosage: string | null; frequency: string |
   taking_status: 'unknown' | 'taking' | 'stopped'; prescription_date: string | null; reviewed_at: string};
 export type Summary = {display_name: string; allergies: string[]; medicines: Medicine[]; notes: string; updated_at: string; expires_at: string};
 export type ContactCard = {display_name: string; contacts: {name: string; relationship: string; phone: string}[]; updated_at: string};
+
+export async function withDeadline<T>(operation: PromiseLike<T>, milliseconds = 8000): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([operation, new Promise<never>((_,reject)=>{
+      timer=setTimeout(()=>reject(new Error('Permission check timed out')),milliseconds);
+    })]);
+  } finally { clearTimeout(timer); }
+}
